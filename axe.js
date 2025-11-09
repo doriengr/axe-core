@@ -43052,12 +43052,14 @@
         _toConsumableArray(out.violations),
         _toConsumableArray(out.incomplete)
       );
-      var impactOrder = ['critical', 'serious', 'moderate', 'minor', 'none'];
-      var byImpact = {};
-      impactOrder.forEach(function (key) {
-        byImpact[key] = mergedIssues.filter(function (issue) {
-          return issue.impact === key;
-        });
+      var impactOrder = ['critical', 'serious', 'moderate', 'minor'];
+      var byImpact = impactOrder.map(function (key) {
+        return {
+          impact: key,
+          errors: mergedIssues.filter(function (issue) {
+            return issue.impact === key;
+          })
+        };
       });
       var totalChecks =
         mergedIssues.length + (out.passes ? out.passes.length : 0);
