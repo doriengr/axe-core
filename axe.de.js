@@ -43061,6 +43061,20 @@
           })
         };
       });
+      var conformanceLevels = ['wcag2a', 'wcag2aa', 'wcag2aaa'];
+      var byConformanceLevel = conformanceLevels.map(function (level) {
+        return {
+          level: level,
+          errors: mergedIssues.filter(function (issue) {
+            return (
+              issue.tags &&
+              issue.tags.some(function (tag) {
+                return tag.toLowerCase() === level;
+              })
+            );
+          })
+        };
+      });
       var totalChecks =
         mergedIssues.length + (out.passes ? out.passes.length : 0);
       var passedChecks = out.passes ? out.passes.length : 0;
@@ -43070,6 +43084,7 @@
         _extends({}, _getEnvironmentData(environmentData), {
           toolOptions: toolOptions,
           byImpact: byImpact,
+          byConformanceLevel: byConformanceLevel,
           passes: out.passes,
           summary: {
             totalChecks: totalChecks,
@@ -43159,617 +43174,665 @@
   })();
   ('use strict');
   axe._load({
-    lang: 'en',
+    lang: 'de',
     data: {
       rules: {
         accesskeys: {
-          description: 'Ensure every accesskey attribute value is unique',
-          help: 'accesskey attribute value should be unique'
+          description:
+            'Stellt sicher, dass die Werte der accesskey-Attribute einzigartig sind.',
+          help: 'Der Wert des accesskey-Attributes muss einzigartig sein.'
         },
         'area-alt': {
           description:
-            'Ensure <area> elements of image maps have alternative text',
-          help: 'Active <area> elements must have alternative text'
+            'Stellt sicher, dass <area>-Elemente Alternativtexte besitzen.',
+          help: 'Aktive <area>-Elemente m\xfcssen einen Alternativtext besitzen.'
         },
         'aria-allowed-attr': {
-          description: "Ensure an element's role supports its ARIA attributes",
-          help: 'Elements must only use supported ARIA attributes'
+          description:
+            'Stellt sicher, dass ARIA-Attribute f\xfcr die vergebene Rolle eines Elements erlaubt sind.',
+          help: 'Elemente d\xfcrfen nur erlaubte ARIA-Attribute verwenden.'
         },
         'aria-allowed-role': {
           description:
-            'Ensure role attribute has an appropriate value for the element',
-          help: 'ARIA role should be appropriate for the element'
+            'Stellt sicher, dass der Wert des role-Attributes f\xfcr dieses Element geeignet ist.',
+          help: 'Der Wert des role-Attributes muss f\xfcr dieses Element geeignet sein.'
         },
         'aria-braille-equivalent': {
           description:
-            'Ensure aria-braillelabel and aria-brailleroledescription have a non-braille equivalent',
-          help: 'aria-braille attributes must have a non-braille equivalent'
+            'Stellt sicher, dass aria-braillelabel und aria-brailleroledescription ein non-braille \xc4quivalent haben.',
+          help: 'aria-braille Attribute m\xfcssen ein non-braille \xc4quivalent haben.'
         },
         'aria-command-name': {
           description:
-            'Ensure every ARIA button, link and menuitem has an accessible name',
-          help: 'ARIA commands must have an accessible name'
+            'Stellt sicher, dass jeder ARIA-button, -link und jedes -menuitem einen zug\xe4nglichen Namen (accessible name) hat.',
+          help: 'ARIA Befehle m\xfcssen einen zug\xe4nglichen Namen (accessible name) besitzen.'
         },
         'aria-conditional-attr': {
           description:
-            "Ensure ARIA attributes are used as described in the specification of the element's role",
-          help: "ARIA attributes must be used as specified for the element's role"
+            'Stellt sicher, dass ARIA-Attribute wie in der Spezifikation der Rolle des Elements beschrieben verwendet werden.',
+          help: 'ARIA-Attribute m\xfcssen entsprechend der Rolle des Elements verwendet werden.'
         },
         'aria-deprecated-role': {
-          description: 'Ensure elements do not use deprecated roles',
-          help: 'Deprecated ARIA roles must not be used'
+          description:
+            'Stellt sicher, dass die Elemente keine veralteten Rollen verwenden.',
+          help: 'Veraltete ARIA-Rollen d\xfcrfen nicht verwendet werden.'
         },
         'aria-dialog-name': {
           description:
-            'Ensure every ARIA dialog and alertdialog node has an accessible name',
-          help: 'ARIA dialog and alertdialog nodes should have an accessible name'
+            'Stellt sicher, dass jeder ARIA-dialog und -alertdialog Knoten einen zug\xe4nglichen Namen (accessible name) hat.',
+          help: 'ARIA-dialog und -alertdialog Knoten m\xfcssen einen zug\xe4nglichen Namen (accessible name) besitzen.'
         },
         'aria-hidden-body': {
           description:
-            'Ensure aria-hidden="true" is not present on the document body.',
-          help: 'aria-hidden="true" must not be present on the document body'
+            "Stellt sicher, dass aria-hidden='true' nicht am <body>-Element des Dokumentes verwendet wird.",
+          help: "Aria-hidden='true' darf nicht f\xfcr den <body> des Dokumentes verwendet werden."
         },
         'aria-hidden-focus': {
           description:
-            'Ensure aria-hidden elements are not focusable nor contain focusable elements',
-          help: 'ARIA hidden element must not be focusable or contain focusable elements'
+            'Stellt sicher, dass ARIA-hidden Elemente keine fokussierbaren Elemente beinhalten.',
+          help: 'ARIA-hidden Elemente d\xfcrfen keine fokussierbaren Elemente beinhalten.'
         },
         'aria-input-field-name': {
-          description: 'Ensure every ARIA input field has an accessible name',
-          help: 'ARIA input fields must have an accessible name'
+          description:
+            'Stellt sicher, dass jeder ARIA-input einen zug\xe4nglichen Namen (accessible name) besitzt.',
+          help: 'ARIA-inputs m\xfcssen einen zug\xe4nglichen Namen (accessible name) besitzen.'
         },
         'aria-meter-name': {
-          description: 'Ensure every ARIA meter node has an accessible name',
-          help: 'ARIA meter nodes must have an accessible name'
+          description:
+            'Stellt sicher, dass jeder ARIA-meter Knoten einen zug\xe4nglichen Namen (accessible name) besitzt.',
+          help: 'ARIA-meter Knoten m\xfcssen einen zug\xe4nglichen Namen (accessible name) besitzen.'
         },
         'aria-progressbar-name': {
           description:
-            'Ensure every ARIA progressbar node has an accessible name',
-          help: 'ARIA progressbar nodes must have an accessible name'
+            'Stellt sicher, dass jeder ARIA-progressbar Knoten einen zug\xe4nglichen Namen (accessible name) besitzt.',
+          help: 'ARIA-progressbar Knoten m\xfcssen einen zug\xe4nglichen Namen (accessible name) besitzen.'
         },
         'aria-prohibited-attr': {
           description:
-            "Ensure ARIA attributes are not prohibited for an element's role",
-          help: 'Elements must only use permitted ARIA attributes'
+            'Stellt sicher, dass ARIA-Attribute f\xfcr die Rolle eines Elements nicht verboten sind.',
+          help: 'Elemente d\xfcrfen nur erlaubte ARIA-Attribute verwenden.'
         },
         'aria-required-attr': {
           description:
-            'Ensure elements with ARIA roles have all required ARIA attributes',
-          help: 'Required ARIA attributes must be provided'
+            'Stellt sicher, dass Elemente mit ARIA-Rollen alle erforderlichen ARIA-Attribute besitzen.',
+          help: 'Erforderliche ARIA-Attribute m\xfcssen bereitgestellt werden.'
         },
         'aria-required-children': {
           description:
-            'Ensure elements with an ARIA role that require child roles contain them',
-          help: 'Certain ARIA roles must contain particular children'
+            'Stellt sicher, dass Elemente mit einer ARIA-Rolle, welche bestimmte untergeordnete Rollen voraussetzten diese auch enthalten.',
+          help: 'Bestimmte ARIA-Rollen m\xfcssen spezifische, untergeordnete Kind-Rollen enthalten.'
         },
         'aria-required-parent': {
           description:
-            'Ensure elements with an ARIA role that require parent roles are contained by them',
-          help: 'Certain ARIA roles must be contained by particular parents'
+            'Stellt sicher, dass Elemente mit ARIA-Rollen, welche \xfcbergeordnete Rollen voraussetzen auch in diesen enthalten sind.',
+          help: 'Bestimmte ARIA-Rollen m\xfcssen in spezifischen, \xfcbergeordneten Eltern-Rollen enthalten sein.'
         },
         'aria-roledescription': {
           description:
-            'Ensure aria-roledescription is only used on elements with an implicit or explicit role',
-          help: 'aria-roledescription must be on elements with a semantic role'
+            'Stellt sicher, dass ARIA-roledescription nur im Zusammenhang mit einer im- oder expliziten Rolle verwendet wird.',
+          help: 'Nutze aria-roledescription f\xfcr Elemente mit einer semantischen Rolle.'
         },
         'aria-roles': {
           description:
-            'Ensure all elements with a role attribute use a valid value',
-          help: 'ARIA roles used must conform to valid values'
+            'Stellt sicher, dass alle Elemente mit einer ARIA-Rolle auch einen g\xfcltigen Wert verwenden.',
+          help: 'Verwendete ARIA-Rollen m\xfcssen g\xfcltigen Werten entsprechen.'
         },
         'aria-text': {
           description:
-            'Ensure role="text" is used on elements with no focusable descendants',
-          help: '"role=text" should have no focusable descendants'
+            'Stellt sicher, dass role="text" f\xfcr Elemente verwendet wird, die keine fokussierbaren Nachkommen (descendants) haben.',
+          help: '"role=text" sollte keine fokussierbaren Nachkommen (descendants) haben.'
         },
         'aria-toggle-field-name': {
-          description: 'Ensure every ARIA toggle field has an accessible name',
-          help: 'ARIA toggle fields must have an accessible name'
+          description:
+            'Stellt sicher, dass jedes ARIA-toggle-Feld ein zug\xe4nglichen Namen (accessible name) besitzt.',
+          help: 'ARIA-toggle-Felder ben\xf6tigen einen zug\xe4nglichen Namen (accessible name).'
         },
         'aria-tooltip-name': {
-          description: 'Ensure every ARIA tooltip node has an accessible name',
-          help: 'ARIA tooltip nodes must have an accessible name'
+          description:
+            'Stellt sicher, dass jeder ARIA-tooltip Knoten einen zug\xe4nglichen Namen (accessible name) besitzt.',
+          help: 'ARIA-tooltip-Knoten ben\xf6tigen einen zug\xe4nglichen Namen (accessible name).'
         },
         'aria-treeitem-name': {
-          description: 'Ensure every ARIA treeitem node has an accessible name',
-          help: 'ARIA treeitem nodes should have an accessible name'
+          description:
+            'Stellt sicher, dass jeder ARIA-treeitem Knoten einen zug\xe4nglichen Namen (accessible name) besitzt.',
+          help: 'ARIA-treeitem-Knoten ben\xf6tigen einen zug\xe4nglichen Namen (accessible name).'
         },
         'aria-valid-attr-value': {
-          description: 'Ensure all ARIA attributes have valid values',
-          help: 'ARIA attributes must conform to valid values'
+          description:
+            'Stellt sicher, dass alle ARIA-Attribute g\xfcltige Werte verwenden.',
+          help: 'Verwendete ARIA-Attribute m\xfcssen g\xfcltigen Werten entsprechen.'
         },
         'aria-valid-attr': {
           description:
-            'Ensure attributes that begin with aria- are valid ARIA attributes',
-          help: 'ARIA attributes must conform to valid names'
+            'Stellt sicher, dass Attribute, welche mit aria- beginnen auch valide ARIA-Attribute sind.',
+          help: 'Verwendete ARIA-Attribute m\xfcssen g\xfcltigen Namen entsprechen.'
         },
         'audio-caption': {
-          description: 'Ensure <audio> elements have captions',
-          help: '<audio> elements must have a captions track'
+          description:
+            'Stellt sicher, dass <audio>-Elemente Untertitel besitzen.',
+          help: '<audio>-Elemente m\xfcssen eine Untertitelung (captions track) besitzen.'
         },
         'autocomplete-valid': {
           description:
-            'Ensure the autocomplete attribute is correct and suitable for the form field',
-          help: 'autocomplete attribute must be used correctly'
+            'Stellt sicher, dass das autocomplete-Attribut korrekt ist und f\xfcr das form-Feld geeignet ist.',
+          help: 'autocomplete-Attribute m\xfcssen korrekt genutzt werden.'
         },
         'avoid-inline-spacing': {
           description:
-            'Ensure that text spacing set through style attributes can be adjusted with custom stylesheets',
-          help: 'Inline text spacing must be adjustable with custom stylesheets'
+            'Stellt sicher, dass der Zeichenabstand durch benutzerdefinierte Stylesheets angepasst werden kann.',
+          help: 'Zeichenabst\xe4nde m\xfcssen durch benutzerdefinierte Stylesheets anpassbar sein.'
         },
         blink: {
-          description: 'Ensure <blink> elements are not used',
-          help: '<blink> elements are deprecated and must not be used'
+          description:
+            'Stellt sicher, dass keine <blink>-Elemente verwendet werden.',
+          help: '<blink>-Elemente sind veraltet und d\xfcrfen nicht verwendet werden.'
         },
         'button-name': {
-          description: 'Ensure buttons have discernible text',
-          help: 'Buttons must have discernible text'
+          description:
+            'Stellt sicher, dass Schaltfl\xe4chen wahrnehmbaren Text enthalten.',
+          help: 'Schaltfl\xe4chen m\xfcssen wahrnehmbaren Text enthalten.'
         },
         bypass: {
           description:
-            'Ensure each page has at least one mechanism for a user to bypass navigation and jump straight to the content',
-          help: 'Page must have means to bypass repeated blocks'
+            'Stellt sicher, dass jede Seite mindestens ein Mittel bereitstellt, welches dem Nutzer erlaubt direkt zum Inhalt der Seite zu springen.',
+          help: 'Wiederholende Bl\xf6cke m\xfcssen vom Nutzer mit Hilfe von der Seite bereitgestellten Mitteln \xfcbersprungen werden k\xf6nnen.'
         },
         'color-contrast-enhanced': {
           description:
-            'Ensure the contrast between foreground and background colors meets WCAG 2 AAA enhanced contrast ratio thresholds',
-          help: 'Elements must meet enhanced color contrast ratio thresholds'
+            'Stellt sicher, dass der Kontrast zwischen Vorder- und Hintergrundfarbe den in der WCAG 2 als AAA ausgewiesenen Kontrastgrenzwerten entspricht.',
+          help: 'Elemente m\xfcssen einen ausreichenden Farbkontrast haben.'
         },
         'color-contrast': {
           description:
-            'Ensure the contrast between foreground and background colors meets WCAG 2 AA minimum contrast ratio thresholds',
-          help: 'Elements must meet minimum color contrast ratio thresholds'
+            'Stellt sicher, dass der Kontrast zwischen Vorder- und Hintergrundfarbe den in der WCAG 2 als AA ausgewiesenen Kontrastgrenzwerten entspricht.',
+          help: 'Elemente m\xfcssen einen ausreichenden Farbkontrast haben.'
         },
         'css-orientation-lock': {
           description:
-            'Ensure content is not locked to any specific display orientation, and the content is operable in all display orientations',
-          help: 'CSS Media queries must not lock display orientation'
+            'Stellt sicher, dass der Inhalt nicht nur auf einer sondern auf allen spezifischen Bildschirmausrichtungen angezeigt werden kann.',
+          help: 'CSS Media Queries d\xfcrfen nicht genutzt werden um die Bildschirmausrichtung zu sperren.'
         },
         'definition-list': {
-          description: 'Ensure <dl> elements are structured correctly',
-          help: '<dl> elements must only directly contain properly-ordered <dt> and <dd> groups, <script>, <template> or <div> elements'
+          description:
+            'Stellt sicher, dass <dl>-Elemente ordnungsgem\xe4\xdf strukturiert sind.',
+          help: '<dl>-Elemente d\xfcrfen unmittelbar nur korrekt verschachtelte <dt>- und <dd>-Gruppen, <script>- oder <template>-Elemente enthalten.'
         },
         dlitem: {
-          description: 'Ensure <dt> and <dd> elements are contained by a <dl>',
-          help: '<dt> and <dd> elements must be contained by a <dl>'
+          description:
+            'Stellt sicher, dass <dt> und <dd>-Elemente in einem <dl>-Element enthalten sind.',
+          help: '<dt>- und <dd>-Elemente m\xfcssen in einem <dl>-Element enthalten sein.'
         },
         'document-title': {
           description:
-            'Ensure each HTML document contains a non-empty <title> element',
-          help: 'Documents must have <title> element to aid in navigation'
+            'Stellt sicher, dass jedes HTML-Dokument ein nichtleeres <title>-Element besitzt.',
+          help: 'Dokumente m\xfcssen ein <title>-Element besitzen, um die Navigation zu erleichtern.'
         },
         'duplicate-id-active': {
           description:
-            'Ensure every id attribute value of active elements is unique',
-          help: 'IDs of active elements must be unique'
+            'Stellt sicher, dass jeder Wert des ID-Attributes von aktiven Elemente einzigartig ist.',
+          help: 'IDs von aktiven Elementen m\xfcssen einzigartig sein.'
         },
         'duplicate-id-aria': {
           description:
-            'Ensure every id attribute value used in ARIA and in labels is unique',
-          help: 'IDs used in ARIA and labels must be unique'
+            'Stellt sicher, dass jeder Wert des ID-Attributes, welcher in ARIA und labels genutzt wird einzigartig ist.',
+          help: 'IDs, welche in ARIA und Lables genutzt werden, m\xfcssen einzigartig sein.'
         },
         'duplicate-id': {
-          description: 'Ensure every id attribute value is unique',
-          help: 'id attribute value must be unique'
+          description:
+            'Stellt sicher, dass der Wert eines id-Attributes einzigartig ist.',
+          help: 'Der Wert des id-Attributes muss einzigartig sein.'
         },
         'empty-heading': {
-          description: 'Ensure headings have discernible text',
-          help: 'Headings should not be empty'
+          description:
+            'Stellt sicher, dass \xdcberschriften einen wahrnehmbaren Text beinhalten.',
+          help: '\xdcberschriften d\xfcrfen nicht leer sein.'
         },
         'empty-table-header': {
-          description: 'Ensure table headers have discernible text',
-          help: 'Table header text should not be empty'
+          description:
+            'Stellt sicher, dass Tabellenkopfzeilen einen wahrnehmbaren Text beinhalten.',
+          help: 'Tabellenkopfzeilen sollten nicht leer sein.'
         },
         'focus-order-semantics': {
           description:
-            'Ensure elements in the focus order have a role appropriate for interactive content',
-          help: 'Elements in the focus order should have an appropriate role'
+            'Stellt sicher, dass Elemente in der Fokusreihenfolge eine geeignete Rolle besitzen.',
+          help: 'Elemente in der Fokusreihenfolge ben\xf6tigen eine Rolle, die f\xfcr interaktive Elemente geeignet ist.'
         },
         'form-field-multiple-labels': {
           description:
-            'Ensure form field does not have multiple label elements',
-          help: 'Form field must not have multiple label elements'
+            'Stellt sicher, dass ein form-Feld nur ein label-Element besitzt.',
+          help: 'form-Felder sollten nur ein label-Element besitzen.'
         },
         'frame-focusable-content': {
           description:
-            'Ensure <frame> and <iframe> elements with focusable content do not have tabindex=-1',
-          help: 'Frames with focusable content must not have tabindex=-1'
+            'Stellt sicher, dass <frame>- und <iframe>-Elemente mit fokussierbarem Inhalt keinen tabindex=-1 haben.',
+          help: 'Frames mit fokussierbarem Inhalt d\xfcrfen keinen tabindex=-1 haben.'
         },
         'frame-tested': {
           description:
-            'Ensure <iframe> and <frame> elements contain the axe-core script',
-          help: 'Frames should be tested with axe-core'
+            'Stellt sicher, dass <iframe> und <frame>-Elemente das axe-core Script beinhalten.',
+          help: 'Frames m\xfcssen mit axe-core getestet werden.'
         },
         'frame-title-unique': {
           description:
-            'Ensure <iframe> and <frame> elements contain a unique title attribute',
-          help: 'Frames must have a unique title attribute'
+            'Stellt sicher, dass <iframe> und <frame>-Elemente ein einzigartiges title-Attribut besitzen.',
+          help: 'Frames m\xfcssen ein einzigartiges title-Attribut besitzen.'
         },
         'frame-title': {
           description:
-            'Ensure <iframe> and <frame> elements have an accessible name',
-          help: 'Frames must have an accessible name'
+            'Stellt sicher, dass <iframe> und <frame>-Elemente ein nichtleeres title-Attribut besitzen.',
+          help: 'Frames m\xfcssen ein nichtleeres title-Attribut besitzen.'
         },
         'heading-order': {
-          description: 'Ensure the order of headings is semantically correct',
-          help: 'Heading levels should only increase by one'
+          description:
+            'Stellt sicher, dass \xdcberschriften in der semantisch korrekten Reihenfolge sind.',
+          help: '\xdcberschriftenebenen sollten nur jeweils um eins steigen.'
         },
         'hidden-content': {
-          description: 'Inform users about hidden content.',
-          help: 'Hidden content on the page should be analyzed'
+          description: 'Informiert den Nutzer \xfcber versteckten Inhalt.',
+          help: 'Versteckter Inhalt auf der Seite konnte nicht analysiert werden.'
         },
         'html-has-lang': {
-          description: 'Ensure every HTML document has a lang attribute',
-          help: '<html> element must have a lang attribute'
+          description:
+            'Stellt sicher, dass jedes HTML Dokument ein lang-Attribut besitzt.',
+          help: 'Das <html>-Element muss ein lang-Attribut besitzen.'
         },
         'html-lang-valid': {
           description:
-            'Ensure the lang attribute of the <html> element has a valid value',
-          help: '<html> element must have a valid value for the lang attribute'
+            'Stellt sicher, dass das lang-Attribut des <html>-Elements einen validen Wert besitzt.',
+          help: 'Das <html>-Element muss einen g\xfcltigen Attributwert f\xfcr das lang-Attribut besitzen.'
         },
         'html-xml-lang-mismatch': {
           description:
-            'Ensure that HTML elements with both valid lang and xml:lang attributes agree on the base language of the page',
-          help: 'HTML elements with lang and xml:lang must have the same base language'
+            'Stellt sicher, dass HTML Elemente mit validen lang und xml:lang Attributen dieselbe Angabe \xfcber die Sprache machen.',
+          help: 'HTML Elemente mit lang und xml:lang Attributen m\xfcssen dieselbe Sprache ausweisen.'
         },
         'identical-links-same-purpose': {
           description:
-            'Ensure that links with the same accessible name serve a similar purpose',
-          help: 'Links with the same name must have a similar purpose'
+            'Stellt sicher, dass Links mit dem selben zug\xe4nglichen Namen (accessible name) denselben Zweck folgen.',
+          help: 'Links mit dem selben zug\xe4nglichen Namen (accessible name) verfolgen denselben Zweck.'
         },
         'image-alt': {
           description:
-            'Ensure <img> elements have alternative text or a role of none or presentation',
-          help: 'Images must have alternative text'
+            'Stellt sicher, dass <img>-Elemente einen Alternativtext oder eine ARIA-Rolle mit dem Wert none oder presentation besitzen.',
+          help: 'Abbildungen m\xfcssen einen Alternativtext besitzen.'
         },
         'image-redundant-alt': {
-          description: 'Ensure image alternative is not repeated as text',
-          help: 'Alternative text of images should not be repeated as text'
+          description:
+            'Stellt sicher, dass Alternativtexte von Bildern nicht als Text wiederholt werden.',
+          help: 'Der Alternativtext von Bildern sollte nicht als Text wiederholt werden.'
         },
         'input-button-name': {
-          description: 'Ensure input buttons have discernible text',
-          help: 'Input buttons must have discernible text'
+          description:
+            'Stellt sicher, dass Eingabeschaltfl\xe4chen wahrnehmbaren Text beinhalten.',
+          help: 'Eingabeschaltfl\xe4chen m\xfcssen wahrnehmbaren Text beinhalten.'
         },
         'input-image-alt': {
           description:
-            'Ensure <input type="image"> elements have alternative text',
-          help: 'Image buttons must have alternative text'
+            'Stellt sicher, dass <input type="image">-Elemente einen Alternativtext besitzen.',
+          help: '<input type="image">-Elemente m\xfcssen einen Alternativtext besitzen.'
         },
         'label-content-name-mismatch': {
           description:
-            'Ensure that elements labelled through their content must have their visible text as part of their accessible name',
-          help: 'Elements must have their visible text as part of their accessible name'
+            'Stellt sicher, dass Elemente, die durch ihren Inhalt beschrieben sind, auch ihren sichtbaren Text als Teil des zug\xe4nglichen Namens (accessible name) haben.',
+          help: 'Elemente m\xfcssen ihren sichtbaren Text auch als Teil des zug\xe4nglichen Namens (accessible name) haben.'
         },
         'label-title-only': {
           description:
-            'Ensure that every form element has a visible label and is not solely labeled using hidden labels, or the title or aria-describedby attributes',
-          help: 'Form elements should have a visible label'
+            'Stellt sicher, dass jedes <form>-Element nicht ausschlie\xdflich durch ein title oder aria-describedby-Attribut beschrieben sind.',
+          help: '<form>-Elemente sollten eine sichtbare Beschriftung haben.'
         },
         label: {
-          description: 'Ensure every form element has a label',
-          help: 'Form elements must have labels'
+          description:
+            'Stellt sicher, dass jedes <form>-Element \xfcber eine Beschriftung verf\xfcgt.',
+          help: '<form>-Elemente m\xfcssen eine Beschriftung haben.'
         },
         'landmark-banner-is-top-level': {
-          description: 'Ensure the banner landmark is at top level',
-          help: 'Banner landmark should not be contained in another landmark'
+          description:
+            'Stellt sicher, dass die banner landmark sich auf der obersten Ebene befindet.',
+          help: 'Banner landmark muss sich auf der obersten Ebene befinden.'
         },
         'landmark-complementary-is-top-level': {
           description:
-            'Ensure the complementary landmark or aside is at top level',
-          help: 'Aside should not be contained in another landmark'
+            'Stellt sicher, dass die erg\xe4nzende landmark oder aside sich auf dem h\xf6chsten Level befindet.',
+          help: 'Das aside-Elemente darf sich nicht in einer anderen landmark befinden.'
         },
         'landmark-contentinfo-is-top-level': {
-          description: 'Ensure the contentinfo landmark is at top level',
-          help: 'Contentinfo landmark should not be contained in another landmark'
+          description:
+            'Stellt sicher, dass die contentinfo landmark sich auf der obersten Ebene befindet.',
+          help: 'Contentinfo landmark muss sich auf der obersten Ebene befinden.'
         },
         'landmark-main-is-top-level': {
-          description: 'Ensure the main landmark is at top level',
-          help: 'Main landmark should not be contained in another landmark'
+          description:
+            'Stellt sicher, dass die main landmark sich auf der obersten Ebene befindet.',
+          help: 'Main landmark ist nicht auf der obersten Ebene.'
         },
         'landmark-no-duplicate-banner': {
-          description: 'Ensure the document has at most one banner landmark',
-          help: 'Document should not have more than one banner landmark'
+          description:
+            'Stellt sicher, dass das Dokument h\xf6chstens eine banner landmark besitzt.',
+          help: 'Das Dokument sollte h\xf6chstens eine banner landmark enthalten.'
         },
         'landmark-no-duplicate-contentinfo': {
           description:
-            'Ensure the document has at most one contentinfo landmark',
-          help: 'Document should not have more than one contentinfo landmark'
+            'Stellt sicher, dass das Dokument h\xf6chstens eine contentinfo landmark besitzt.',
+          help: 'Das Dokument sollte h\xf6chstens eine contentinfo landmark enthalten.'
         },
         'landmark-no-duplicate-main': {
-          description: 'Ensure the document has at most one main landmark',
-          help: 'Document should not have more than one main landmark'
+          description:
+            'Stellt sicher, dass das Dokument h\xf6chstens eine main landmark besitzt.',
+          help: 'Das Dokument sollte nur eine main landmark besitzen.'
         },
         'landmark-one-main': {
-          description: 'Ensure the document has a main landmark',
-          help: 'Document should have one main landmark'
+          description:
+            'Stellt sicher, dass das Dokument eine main landmark besitzt.',
+          help: 'Seite muss eine main landmark enthalten.'
         },
         'landmark-unique': {
-          description: 'Ensure landmarks are unique',
-          help: 'Landmarks should have a unique role or role/label/title (i.e. accessible name) combination'
+          description: 'Stellt sicher, dass landmarks einzigartig sind.',
+          help: 'Landmarks m\xfcssen eine einzigartige role oder role/label/title Kombination (bzw. zug\xe4nglicher Name / accessible name) besitzen.'
         },
         'link-in-text-block': {
           description:
-            'Ensure links are distinguished from surrounding text in a way that does not rely on color',
-          help: 'Links must be distinguishable without relying on color'
+            'Stellt sicher, dass Links vom umgebenden Text nicht allein durch die Farbe unterschieden werden k\xf6nnen.',
+          help: 'Links m\xfcssen vom umgebenden Text auf eine Weise unterschieden werden k\xf6nnen, die nicht allein auf Farbe beruht.'
         },
         'link-name': {
-          description: 'Ensure links have discernible text',
-          help: 'Links must have discernible text'
+          description:
+            'Stellt sicher, dass Links wahrnehmbaren Text beinhalten.',
+          help: 'Links m\xfcssen wahrnehmbaren Text beinhalten.'
         },
         list: {
-          description: 'Ensure that lists are structured correctly',
-          help: '<ul> and <ol> must only directly contain <li>, <script> or <template> elements'
+          description: 'Stellt sicher, dass Listen korrekt strukturiert sind.',
+          help: '<ul>- und <ol>-Elemente d\xfcrfen unmittelbar nur <li>-, <script>- oder <template>-Elemente enthalten.'
         },
         listitem: {
-          description: 'Ensure <li> elements are used semantically',
-          help: '<li> elements must be contained in a <ul> or <ol>'
+          description:
+            'Stellt sicher, dass <li>-Elemente semantisch korrekt verwendet werden.',
+          help: '<li>-Elemente m\xfcssen in einem <ul>- oder <ol>-Element enthalten sein.'
         },
         marquee: {
-          description: 'Ensure <marquee> elements are not used',
-          help: '<marquee> elements are deprecated and must not be used'
+          description:
+            'Stellt sicher, dass <marquee>-Elemente nicht verwendet werden.',
+          help: '<marquee>-Elemente sind veraltet und d\xfcrfen nicht verwendet werden.'
         },
         'meta-refresh-no-exceptions': {
           description:
-            'Ensure <meta http-equiv="refresh"> is not used for delayed refresh',
-          help: 'Delayed refresh must not be used'
+            'Stellt sicher, dass <meta http-equiv="refresh"> nicht f\xfcr die verz\xf6gerte Aktualisierung verwendet wird.',
+          help: 'Die verz\xf6gerte Aktualisierung darf nicht verwendet werden.'
         },
         'meta-refresh': {
           description:
-            'Ensure <meta http-equiv="refresh"> is not used for delayed refresh',
-          help: 'Delayed refresh under 20 hours must not be used'
+            'Stellt sicher, dass <meta http-equiv="refresh"> nicht verwendet werden.',
+          help: 'Eine zeitgesteuerte Aktualisierung (refresh) sollte nicht verwendet werden.'
         },
         'meta-viewport-large': {
           description:
-            'Ensure <meta name="viewport"> can scale a significant amount',
-          help: 'Users should be able to zoom and scale the text up to 500%'
+            'Stellt sicher, dass <meta name="viewport"> nicht verhindert, dass ein signifikanter Zoom verwendet werden kann.',
+          help: 'Benutzer sollten in der Lage sein, den Text um bis zu 500% vergr\xf6\xdfern und skalieren zu k\xf6nnen.'
         },
         'meta-viewport': {
           description:
-            'Ensure <meta name="viewport"> does not disable text scaling and zooming',
-          help: 'Zooming and scaling must not be disabled'
+            'Stellt sicher, dass <meta name="viewport"> Textskalierung und -zoom nicht verhindert werden.',
+          help: 'Zoomen und Skalieren darf nicht deaktiviert werden.'
         },
         'nested-interactive': {
           description:
-            'Ensure interactive controls are not nested as they are not always announced by screen readers or can cause focus problems for assistive technologies',
-          help: 'Interactive controls must not be nested'
+            'Stellt sicher, dass interaktive Steuerelemente nicht verschachtelt (nested) sind, da sie nicht immer von Bildschirmleseger\xe4ten angezeigt werden oder Probleme bei der Fokussierung von Hilfstechnologien verursachen k\xf6nnen.',
+          help: 'Interaktive Steuerelemente d\xfcrfen nicht verschachtelt (nested) werden.'
         },
         'no-autoplay-audio': {
           description:
-            'Ensure <video> or <audio> elements do not autoplay audio for more than 3 seconds without a control mechanism to stop or mute the audio',
-          help: '<video> or <audio> elements must not play automatically'
+            'Stellt sicher, dass <video> oder <audio> Elemente keine T\xf6ne automatisch abspielen f\xfcr mehr als 3 Sekunden (autoplay) ohne eine M\xf6glichkeit dies zu stoppen.',
+          help: '<video> oder <audio> Elemente geben keine T\xf6ne automatisch aus.'
         },
         'object-alt': {
-          description: 'Ensure <object> elements have alternative text',
-          help: '<object> elements must have alternative text'
+          description:
+            'Stellt sicher, dass <object>-Elemente einen Alternativtext besitzen.',
+          help: '<object>-Elemente m\xfcssen einen Alternativtext besitzen.'
         },
         'p-as-heading': {
           description:
-            'Ensure bold, italic text and font-size is not used to style <p> elements as a heading',
-          help: 'Styled <p> elements must not be used as headings'
+            'Stellt sicher, dass <p>-Elemente nicht daf\xfcr verwendet werden um \xdcberschriften zu formatieren.',
+          help: 'Die Schriftschnitte bold und italic sowie die Schriftgr\xf6\xdfe d\xfcrfen nicht verwendet werden, um <p>-Elemente wie \xdcberschriften zu formatieren.'
         },
         'page-has-heading-one': {
           description:
-            'Ensure that the page, or at least one of its frames contains a level-one heading',
-          help: 'Page should contain a level-one heading'
+            'Stellt sicher, dass die Seite oder zumindest eins der frame-Elemente eine \xdcberschrift der ersten Ebene enthalten.',
+          help: 'Die Seite muss eine \xdcberschrift der ersten Ebene enthalten.'
         },
         'presentation-role-conflict': {
           description:
-            'Ensure elements marked as presentational do not have global ARIA or tabindex so that all screen readers ignore them',
-          help: 'Elements marked as presentational should be consistently ignored'
+            'Elemente mit role="none" oder role="presentation" sollten kein globales ARIA-Attribute besitzen oder fokussierbar sein, damit sie von Screenreadern ignoriert werden.',
+          help: 'Elemente mit "role=none" oder "role=presentation" sollen von Screenreadern ignoriert werden.'
         },
         region: {
-          description: 'Ensure all page content is contained by landmarks',
-          help: 'All page content should be contained by landmarks'
+          description:
+            'Stellt sicher, dass jeglicher Inhalt in einer landmark region enthalten ist.',
+          help: 'Inhalte sollten in einer landmark region enthalten sein.'
         },
         'role-img-alt': {
-          description: 'Ensure [role="img"] elements have alternative text',
-          help: '[role="img"] elements must have alternative text'
+          description:
+            "Stellt sicher, dass [role='img'] Elemente einen Alternativ Text besitzen.",
+          help: "[role='img'] Elemente haben ein Alternativtext."
         },
         'scope-attr-valid': {
-          description: 'Ensure the scope attribute is used correctly on tables',
-          help: 'scope attribute should be used correctly'
+          description:
+            'Stellt sicher, dass das scope-Attribut bei Tabellen korrekt verwendet wird.',
+          help: 'Das scope-Attribut sollte korrekt verwendet werden.'
         },
         'scrollable-region-focusable': {
           description:
-            'Ensure elements that have scrollable content are accessible by keyboard',
-          help: 'Scrollable region must have keyboard access'
+            'Elemente, welche scrollbaren Inhalt besitzen sollten durch die Tastatur erreichbar und bedienbar sein.',
+          help: 'Scrollbare Regionen m\xfcssen per Tastatur erreichbar sein.'
         },
         'select-name': {
-          description: 'Ensure select element has an accessible name',
-          help: 'Select element must have an accessible name'
+          description:
+            'Stellt sicher, dass <select> Elemente einen zug\xe4nglichen Namen (accessible name) besitzen.',
+          help: '<select> Elemente m\xfcssen einen zug\xe4nglichen Namen (accessible name) besitzen.'
         },
         'server-side-image-map': {
-          description: 'Ensure that server-side image maps are not used',
-          help: 'Server-side image maps must not be used'
+          description:
+            'Stellt sicher, dass serverseitige Imagemaps nicht verwendet werden.',
+          help: 'Serverseitige Imagemaps d\xfcrfen nicht verwendet werden.'
         },
         'skip-link': {
-          description: 'Ensure all skip links have a focusable target',
-          help: 'The skip-link target should exist and be focusable'
+          description:
+            'Stellt sicher, dass alle Skip-Links ein fokussierbares Ziel enthalten.',
+          help: 'Das Ziel eines Skip-Links sollte existieren und fokussierbar sein.'
         },
         'summary-name': {
-          description: 'Ensure summary elements have discernible text',
-          help: 'Summary elements must have discernible text'
+          description:
+            'Stellt sicher, dass die summary-Elemente einen erkennbaren Text haben',
+          help: 'summary-Elemente m\xfcssen einen erkennbaren Text haben'
         },
         'svg-img-alt': {
           description:
-            'Ensure <svg> elements with an img, graphics-document or graphics-symbol role have accessible text',
-          help: '<svg> elements with an img role must have alternative text'
+            'Stellt sicher, dass <svg> Elemente mit einer img, graphics-document oder graphics-symbol Rolle einen zug\xe4nglichen Namen (accessible name) besitzen.',
+          help: '<svg> Elemente mit einer img Rolle sollten einen Alternativtext besitzen.'
         },
         tabindex: {
           description:
-            'Ensure tabindex attribute values are not greater than 0',
-          help: 'Elements should not have tabindex greater than zero'
+            'Stellt sicher, dass keine tabindex-Attribute mit einem Wert gr\xf6\xdfer als null verwendet werden.',
+          help: 'Elemente sollten keinen tabindex besitzen, der gr\xf6\xdfer als null ist.'
         },
         'table-duplicate-name': {
           description:
-            'Ensure the <caption> element does not contain the same text as the summary attribute',
-          help: 'Tables should not have the same summary and caption'
+            'Stellt sicher, dass Tabellen nicht den gleichen Text im <caption>-Element wie im summary-Attribut enthalten.',
+          help: 'Das <caption>-Element sollte nicht den gleichen Text wie das summary-Attribut enthalten.'
         },
         'table-fake-caption': {
           description:
-            'Ensure that tables with a caption use the <caption> element.',
-          help: 'Data or header cells must not be used to give caption to a data table.'
+            'Stellt sicher, dass Tabellen mit einer Beschriftung auch das <caption>-Element verwenden.',
+          help: 'Daten- oder Kopfzellen sollten nicht verwendet werden, um einer Datentabelle eine \xdcberschrift zu geben.'
         },
         'target-size': {
-          description: 'Ensure touch targets have sufficient size and space',
-          help: 'All touch targets must be 24px large, or leave sufficient space'
+          description:
+            'Stellt sicher, dass Ber\xfchrungsobjekte (touch targets) ausreichend gro\xdf sind und gen\xfcgend Platz bieteen.',
+          help: 'Alle Ber\xfchrungsobjekte (touch targets) m\xfcssen 24 Pixel gro\xdf sein oder ausreichend Platz lassen.'
         },
         'td-has-header': {
           description:
-            'Ensure that each non-empty data cell in a <table> larger than 3 by 3  has one or more table headers',
-          help: 'Non-empty <td> elements in larger <table> must have an associated table header'
+            'Stellt sicher, dass jede nichtleere Zelle einer Tabelle ein oder mehrere Tabellenk\xf6pfe haben.',
+          help: 'In Tabellen, die gr\xf6\xdfer als 3 mal 3 sind, m\xfcssen alle nichtleeren <td>-Elemente einen zugeh\xf6rigen Tabellenkopf haben.'
         },
         'td-headers-attr': {
           description:
-            'Ensure that each cell in a table that uses the headers attribute refers only to other <th> elements in that table',
-          help: 'Table cell headers attributes must refer to other <th> elements in the same table'
+            'Stellt sicher, dass jede Zelle in einer Tabelle, welche das headers-Attribut verwendet, sich nur auf andere Zellen derselben Tabelle beziehen.',
+          help: 'Innerhalb eines <table>-Elementes d\xfcrfen sich Zellen, die das headers-Attribut verwenden, nur auf andere Zellen derselben Tabelle beziehen.'
         },
         'th-has-data-cells': {
           description:
-            'Ensure that <th> elements and elements with role=columnheader/rowheader have data cells they describe',
-          help: 'Table headers in a data table must refer to data cells'
+            'Stellt sicher, dass jeder Tabellenkopf in einer Datentabelle sich auf Datenzellen bezieht.',
+          help: 'Alle <th>-Elemente sowie Elemente mit role=columnheader/rowheader m\xfcssen Datenzellen haben, die sie beschreiben.'
         },
         'valid-lang': {
-          description: 'Ensure lang attributes have valid values',
-          help: 'lang attribute must have a valid value'
+          description:
+            'Stellt sicher, dass lang-Attribute g\xfcltige Werte haben.',
+          help: 'Das lang-Attribut muss einen g\xfcltigen Wert haben.'
         },
         'video-caption': {
-          description: 'Ensure <video> elements have captions',
-          help: '<video> elements must have captions'
+          description:
+            'Stellt sicher, dass <video>-Elemente Untertitel besitzen.',
+          help: '<video>-Elemente m\xfcssen Untertitel besitzen.'
         }
       },
       checks: {
         abstractrole: {
           impact: 'serious',
           messages: {
-            pass: 'Abstract roles are not used',
+            pass: 'abstract Rolle wird nicht verwendet.',
             fail: {
-              singular: 'Abstract role cannot be directly used: ${data.values}',
-              plural: 'Abstract roles cannot be directly used: ${data.values}'
+              singular:
+                'abstract Rolle kann nicht so verwendet werden: ${data.values}',
+              plural:
+                'abstract Rollen k\xf6nnen nicht so verwendet werden: ${data.values}'
             }
           }
         },
         'aria-allowed-attr': {
           impact: 'critical',
           messages: {
-            pass: 'ARIA attributes are used correctly for the defined role',
+            pass: 'ARIA-Attribute werden korrekt f\xfcr die definierte Rolle verwendet.',
             fail: {
-              singular: 'ARIA attribute is not allowed: ${data.values}',
-              plural: 'ARIA attributes are not allowed: ${data.values}'
+              singular:
+                'Folgendes ARIA Attribut ist nicht erlaubt: ${data.values}',
+              plural:
+                'Folgende ARIA Attribute sind nicht erlaubt: ${data.values}'
             },
             incomplete:
-              'Check that there is no problem if the ARIA attribute is ignored on this element: ${data.values}'
+              'Pr\xfcfe, dass es kein Problem gibt, wenn das ARIA-Attribut bei diesem Element ignoriert wird: ${data.values}'
           }
         },
         'aria-allowed-role': {
           impact: 'minor',
           messages: {
-            pass: 'ARIA role is allowed for given element',
+            pass: 'ARIA Rolle ist f\xfcr dieses Element erlaubt.',
             fail: {
               singular:
-                'ARIA role ${data.values} is not allowed for given element',
+                'ARIA Rolle ${data.values} ist nicht f\xfcr dieses Element erlaubt.',
               plural:
-                'ARIA roles ${data.values} are not allowed for given element'
+                'ARIA Rollen ${data.values} sind nicht f\xfcr dieses Element erlaubt.'
             },
             incomplete: {
               singular:
-                'ARIA role ${data.values} must be removed when the element is made visible, as it is not allowed for the element',
+                'ARIA Rolle ${data.values} muss entfernt werden, wenn das Element sichtbar wird, da es nicht f\xfcr dieses Element erlaubt ist.',
               plural:
-                'ARIA roles ${data.values} must be removed when the element is made visible, as they are not allowed for the element'
+                'ARIA Rollen ${data.values} m\xfcssen entfernt werden, wenn das Element sichtbar wird, da sie nicht f\xfcr dieses Element erlaubt sind.'
             }
           }
         },
         'aria-busy': {
           impact: 'serious',
           messages: {
-            pass: 'Element has an aria-busy attribute',
-            fail: 'Element uses aria-busy="true" while showing a loader'
+            pass: 'Element hat ein aria-busy-Attribut.',
+            fail: 'Element verwendet aria-busy="true" bei der Anzeige eines Ladevorgangs (loader).'
           }
         },
         'aria-conditional-attr': {
           impact: 'serious',
           messages: {
-            pass: 'ARIA attribute is allowed',
+            pass: 'ARIA-Attribut ist erlaubt.',
             fail: {
               checkbox:
-                'Remove aria-checked, or set it to "${data.checkState}" to match the real checkbox state',
+                'Entferne aria-checked, oder setze es auf "${data.checkState}", damit es dem tats\xe4chlichen Zustand des Kontrollk\xe4stchens entspricht.',
               rowSingular:
-                'This attribute is supported with treegrid rows, but not ${data.ownerRole}: ${data.invalidAttrs}',
+                'Dieses Attribut wird bei treegrid-Zeilen unterst\xfctzt, aber nicht bei ${data.ownerRole}: ${data.invalidAttrs}.',
               rowPlural:
-                'These attributes are supported with treegrid rows, but not ${data.ownerRole}: ${data.invalidAttrs}'
+                'Diese Attribute werden von treegrid-Zeilen unterst\xfctzt, aber nicht von ${data.ownerRole}: ${data.invalidAttrs}'
             }
           }
         },
         'aria-errormessage': {
           impact: 'critical',
           messages: {
-            pass: 'aria-errormessage exists and references elements visible to screen readers that use a supported aria-errormessage technique',
+            pass: 'aria-errormessage Attribut existiert und referenziert Elemente, die sichtbar f\xfcr Screen Reader sind, welche die entsprechende Technologie unterst\xfctzen.',
             fail: {
               singular:
-                'aria-errormessage value `${data.values}` must use a technique to announce the message (e.g., aria-live, aria-describedby, role=alert, etc.)',
+                'aria-errormessage Wert `${data.values}` ben\xf6tigt eine M\xf6glichkeit um entsprechend vorgeschlagen zu werden (z.B. aria-live, aria-describedby, role=alert, usw.).',
               plural:
-                'aria-errormessage values `${data.values}` must use a technique to announce the message (e.g., aria-live, aria-describedby, role=alert, etc.)',
+                'aria-errormessage Werte `${data.values}` ben\xf6tigen eine M\xf6glichkeit um entsprechend vorgeschlagen zu werden (z.B. aria-live, aria-describedby, role=alert, usw.).',
               hidden:
-                'aria-errormessage value `${data.values}` cannot reference a hidden element'
+                'aria-errormessage Wert `${data.values}` kann nicht auf ein verstecktes Element verweisen.'
             },
             incomplete: {
               singular:
-                'Ensure aria-errormessage value `${data.values}` references an existing element',
+                'Stellt sicher, dass aria-errormessage Wert `${data.values}` auf ein existierendes Element verweist.',
               plural:
-                'Ensure aria-errormessage values `${data.values}` reference existing elements',
+                'Stellt sicher, dass aria-errormessage Werte `${data.values}` zu existierenden Elementen verweisen.',
               idrefs:
-                'Unable to determine if aria-errormessage element exists on the page: ${data.values}'
+                'Es konnte nicht festgestellt werden, ob das Element aria-errormessage auf der Seite existiert: ${data.values}'
             }
           }
         },
         'aria-hidden-body': {
           impact: 'critical',
           messages: {
-            pass: 'No aria-hidden attribute is present on document body',
-            fail: 'aria-hidden=true should not be present on the document body'
+            pass: 'Kein aria-hidden Attribut ist im <body>-Element des Dokuments vorhanden.',
+            fail: 'Das <body>-Element des Dokumentes darf nicht das Attribut aria-hidden="true" besitzen.'
           }
         },
         'aria-level': {
           impact: 'serious',
           messages: {
-            pass: 'aria-level values are valid',
+            pass: 'aria-level Werte sind g\xfcltig.',
             incomplete:
-              'aria-level values greater than 6 are not supported in all screenreader and browser combinations'
+              'Aria-Level Werte gr\xf6\xdfer als 6 werden nicht von allen Screenreader- und Browser-Kombinationen unterst\xfctzt.'
           }
         },
         'aria-prohibited-attr': {
           impact: 'serious',
           messages: {
-            pass: 'ARIA attribute is allowed',
+            pass: 'ARIA-Attribut ist erlaubt',
             fail: {
               hasRolePlural:
-                '${data.prohibited} attributes cannot be used with role "${data.role}".',
+                '${data.prohibited} Attribute k\xf6nnen nicht mit der Rolle "${data.role}" verwendet werden.',
               hasRoleSingular:
-                '${data.prohibited} attribute cannot be used with role "${data.role}".',
+                '${data.prohibited} Attribut kann nicht mit der Rolle "${data.role}" verwendet werden.',
               noRolePlural:
-                '${data.prohibited} attributes cannot be used on a ${data.nodeName} with no valid role attribute.',
+                '${data.prohibited} Attribute k\xf6nnen nicht auf ${data.nodeName} ohne g\xfcltiges role Attribut verwendet werden.',
               noRoleSingular:
-                '${data.prohibited} attribute cannot be used on a ${data.nodeName} with no valid role attribute.'
+                '${data.prohibited} Attribut kann nicht auf ${data.nodeName} ohne g\xfcltiges role Attribut verwendet werden.'
             },
             incomplete: {
               hasRoleSingular:
-                '${data.prohibited} attribute is not well supported with role "${data.role}".',
+                '${data.prohibited} Attribut wird von der Rolle "${data.role}" nicht gut unterst\xfctzt.',
               hasRolePlural:
-                '${data.prohibited} attributes are not well supported with role "${data.role}".',
+                '${data.prohibited} Attribute werden von der Rolle "${data.role}" nicht gut unterst\xfctzt.',
               noRoleSingular:
-                '${data.prohibited} attribute is not well supported on a ${data.nodeName} with no valid role attribute.',
+                '${data.prohibited} Attribut wird bei ${data.nodeName} ohne g\xfcltiges role Attribute nicht gut unterst\xfctzt.',
               noRolePlural:
-                '${data.prohibited} attributes are not well supported on a ${data.nodeName} with no valid role attribute.'
+                '${data.prohibited} Attribute werdeb bei ${data.nodeName} ohne g\xfcltiges role Attribute nicht gut unterst\xfctzt.'
             }
           }
         },
         'aria-required-attr': {
           impact: 'critical',
           messages: {
-            pass: 'All required ARIA attributes are present',
+            pass: 'Alle ben\xf6tigten ARIA-Attribute sind vorhanden.',
             fail: {
-              singular: 'Required ARIA attribute not present: ${data.values}',
-              plural: 'Required ARIA attributes not present: ${data.values}'
+              singular:
+                'Ben\xf6tigtes ARIA Attribut nicht vorhanden: ${data.values}',
+              plural:
+                'Ben\xf6tigte ARIA Attribute nicht vorhanden: ${data.values}'
             }
           }
         },
@@ -43777,212 +43840,220 @@
           impact: 'critical',
           messages: {
             pass: {
-              default: 'Required ARIA children are present',
+              default: 'Alle ben\xf6tigten ARIA Kinder sind vorhanden.',
               'aria-busy':
-                'Element has an aria-busy attribute, so it is allowed to omit required children'
+                'Element hat ein aria-busy-Attribut, daher ist es erlaubt, erforderliche ARIA Kinder wegzulassen'
             },
             fail: {
-              singular: 'Required ARIA child role not present: ${data.values}',
-              plural: 'Required ARIA children role not present: ${data.values}',
+              singular:
+                'Ben\xf6tigte ARIA Kindrolle nicht vorhanden: ${data.values}',
+              plural:
+                'Ben\xf6tigte ARIA Kindrollen nicht vorhanden: ${data.values}',
               unallowed:
-                'Element has children which are not allowed: ${data.values}'
+                'Element hat Kinder, die nicht erlaubt sind: ${data.values}'
             },
             incomplete: {
-              singular: 'Expecting ARIA child role to be added: ${data.values}',
-              plural: 'Expecting ARIA children role to be added: ${data.values}'
+              singular:
+                'Entsprechende ARIA Kindrolle muss hinzugef\xfcgt werden: ${data.values}',
+              plural:
+                'Entsprechende ARIA Kindrollen m\xfcssen hinzugef\xfcgt werden: ${data.values}'
             }
           }
         },
         'aria-required-parent': {
           impact: 'critical',
           messages: {
-            pass: 'Required ARIA parent role present',
+            pass: 'Alle ARIA Elternrollen sind vorhanden.',
             fail: {
-              singular: 'Required ARIA parent role not present: ${data.values}',
-              plural: 'Required ARIA parents role not present: ${data.values}'
+              singular:
+                'Ben\xf6tigte ARIA Elternrolle nicht vorhanden: ${data.values}',
+              plural:
+                'Ben\xf6tigte ARIA Elternrollen nicht vorhanden: ${data.values}'
             }
           }
         },
         'aria-roledescription': {
           impact: 'serious',
           messages: {
-            pass: 'aria-roledescription used on a supported semantic role',
+            pass: 'aria-roledescription mit einer unterst\xfctzten semantischen Rolle verwendet.',
             incomplete:
-              'Check that the aria-roledescription is announced by supported screen readers',
-            fail: 'Give the element a role that supports aria-roledescription'
+              'Es sollte \xfcberpr\xfcft werden ob aria-roledescription von einem Screenreader vorgelesen wird.',
+            fail: 'Das Element muss mit einer Rolle, welche aria-roledescription unterst\xfctzt, versehen werden.'
           }
         },
         'aria-unsupported-attr': {
           impact: 'critical',
           messages: {
-            pass: 'ARIA attribute is supported',
-            fail: 'ARIA attribute is not widely supported in screen readers and assistive technologies: ${data.values}'
+            pass: 'ARIA Attribut wird unterst\xfctzt',
+            fail: 'ARIA Attribut ist nicht allgemein in Screenreadern und anderen assistiven Technologien unterst\xfctzt: ${data.values}'
           }
         },
         'aria-valid-attr-value': {
           impact: 'critical',
           messages: {
-            pass: 'ARIA attribute values are valid',
+            pass: 'ARIA Attributwerte sind g\xfcltig.',
             fail: {
-              singular: 'Invalid ARIA attribute value: ${data.values}',
-              plural: 'Invalid ARIA attribute values: ${data.values}'
+              singular: 'Ung\xfcltiger Wert des ARIA Attributes ${data.values}',
+              plural: 'Ung\xfcltige Werte der ARIA Attribute: ${data.values}'
             },
             incomplete: {
-              noId: 'ARIA attribute element ID does not exist on the page: ${data.needsReview}',
+              noId: 'Verwendete ID im ARIA Attribut existiert nicht auf der Seite: ${data.needsReview}',
               noIdShadow:
-                'ARIA attribute element ID does not exist on the page or is a descendant of a different shadow DOM tree: ${data.needsReview}',
+                'ARIA-Attribut Element-ID existiert nicht auf der Seite oder ist ein Nachkomme (descendant) eines anderen Schatten-DOM-tree: ${data.needsReview}',
               ariaCurrent:
-                'ARIA attribute value is invalid and will be treated as "aria-current=true": ${data.needsReview}',
+                'Folgendes ARIA Attributwert ist ung\xfcltig und wird wie "aria-current=true" gesehen: ${data.needsReview}',
               idrefs:
-                'Unable to determine if ARIA attribute element ID exists on the page: ${data.needsReview}',
+                'Es konnte nicht festgestellt werden, ob das ARIA-Attribut element ID auf der Seite existiert: ${data.needsReview}',
               empty:
-                'ARIA attribute value is ignored while empty: ${data.needsReview}',
+                'ARIA-Attributwert wird ignoriert, wenn leer: ${data.needsReview}',
               controlsWithinPopup:
-                'Unable to determine if aria-controls referenced ID exists on the page while using aria-haspopup: ${data.needsReview}'
+                'Bei der Verwendung von aria-haspopup konnte nicht festgestellt werden, ob die von aria-controls referenzierte ID auf der Seite existiert: ${data.needsReview}'
             }
           }
         },
         'aria-valid-attr': {
           impact: 'critical',
           messages: {
-            pass: 'ARIA attribute name is valid',
+            pass: 'Alle ARIA Attributnamen sind g\xfcltig.',
             fail: {
-              singular: 'Invalid ARIA attribute name: ${data.values}',
-              plural: 'Invalid ARIA attribute names: ${data.values}'
+              singular: 'Ung\xfcltige ARIA Attribut Name: ${data.values}',
+              plural: 'Ung\xfcltige ARIA Attribut Namen: ${data.values}'
             }
           }
         },
         'braille-label-equivalent': {
           impact: 'serious',
           messages: {
-            pass: 'aria-braillelabel is used on an element with accessible text',
-            fail: 'aria-braillelabel is used on an element with no accessible text',
-            incomplete: 'Unable to compute accessible text'
+            pass: 'aria-braillelabel wird f\xfcr ein Element mit zug\xe4nglichem Text verwendet.',
+            fail: 'aria-braillelabel wird f\xfcr ein Element ohne zug\xe4nglichen Text verwendet.',
+            incomplete: 'Zug\xe4nglicher Text kann nicht berechnet werden.'
           }
         },
         'braille-roledescription-equivalent': {
           impact: 'serious',
           messages: {
-            pass: 'aria-brailleroledescription is used on an element with aria-roledescription',
+            pass: 'aria-brailleroledescription wird f\xfcr ein Element mit aria-roledescription verwendet.',
             fail: {
               noRoleDescription:
-                'aria-brailleroledescription is used on an element with no aria-roledescription',
+                'aria-brailleroledescription wird f\xfcr ein Element ohne aria-roledescription verwendet.',
               emptyRoleDescription:
-                'aria-brailleroledescription is used on an element with an empty aria-roledescription'
+                'aria-brailleroledescription wird f\xfcr ein Element mit einer leeren aria-roledescription verwendet.'
             }
           }
         },
         deprecatedrole: {
           impact: 'minor',
           messages: {
-            pass: 'ARIA role is not deprecated',
-            fail: 'The role used is deprecated: ${data}'
+            pass: 'ARIA Rolle ist nicht veraltet.',
+            fail: 'Die verwendete Rolle ist veraltet: ${data}'
           }
         },
         fallbackrole: {
           impact: 'serious',
           messages: {
-            pass: 'Only one role value used',
-            fail: 'Use only one role value, since fallback roles are not supported in older browsers',
+            pass: 'Nur ein Wert f\xfcr role genutzt.',
+            fail: 'Es sollte nur ein Wert f\xfcr role benutzt werden, da Fallback-Werte in \xe4lteren Browsern nicht unterst\xfctzt werden.',
             incomplete:
-              "Use only role 'presentation' or 'none' since they are synonymous."
+              "Verwende nur die Rolle 'presentation' oder 'none', da sie synonym sind."
           }
         },
         'has-global-aria-attribute': {
           impact: 'minor',
           messages: {
             pass: {
-              singular: 'Element has global ARIA attribute: ${data.values}',
-              plural: 'Element has global ARIA attributes: ${data.values}'
+              singular: 'Element hat globales ARIA Attribut: ${data.values}',
+              plural: 'Element hat globale ARIA Attribute: ${data.values}'
             },
-            fail: 'Element does not have global ARIA attribute'
+            fail: 'Das Element hat keine globalen ARIA Attribute.'
           }
         },
         'has-widget-role': {
           impact: 'minor',
           messages: {
-            pass: 'Element has a widget role.',
-            fail: 'Element does not have a widget role.'
+            pass: 'Element hat eine widget-Rolle.',
+            fail: 'Das Element besitzt keine widget-Rolle.'
           }
         },
         invalidrole: {
           impact: 'critical',
           messages: {
-            pass: 'ARIA role is valid',
+            pass: 'ARIA Rolle ist g\xfcltig.',
             fail: {
               singular:
-                'Role must be one of the valid ARIA roles: ${data.values}',
+                'Folgende Rolle muss eine von den validen ARIA Rollen sein: ${data.values}',
               plural:
-                'Roles must be one of the valid ARIA roles: ${data.values}'
+                'Folgende Rollen m\xfcssen jeweils eine von den validen ARIA Rollen sein: ${data.values}'
             }
           }
         },
         'is-element-focusable': {
           impact: 'minor',
           messages: {
-            pass: 'Element is focusable.',
-            fail: 'Element is not focusable.'
+            pass: 'Element ist fokussierbar.',
+            fail: 'Element ist nicht fokussierbar.'
           }
         },
         'no-implicit-explicit-label': {
           impact: 'serious',
           messages: {
-            pass: 'There is no mismatch between a <label> and accessible name',
+            pass: 'Kein Unterschied zwischen dem <label> und dem zug\xe4nglichen Namen (accessible name).',
             incomplete:
-              "Check that the <label> does not need be part of the ARIA ${data} field's name"
+              '\xdcberpr\xfcfe, dass das <label> nicht Teil des ARIA ${data} Feldnamens ist.'
           }
         },
         unsupportedrole: {
           impact: 'critical',
           messages: {
-            pass: 'ARIA role is supported',
-            fail: 'The role used is not widely supported in screen readers and assistive technologies: ${data}'
+            pass: 'ARIA Rolle wird unterst\xfctzt.',
+            fail: 'Folgende Rollen werden nicht allgemein in Screenreadern und assistiven Technologien unterst\xfctzt: ${data.values}'
           }
         },
         'valid-scrollable-semantics': {
           impact: 'minor',
           messages: {
-            pass: 'Element has valid semantics for an element in the focus order.',
-            fail: 'Element has invalid semantics for an element in the focus order.'
+            pass: 'Das Element hat eine g\xfcltige Semantik f\xfcr ein Element in der Fokusreihenfolge.',
+            fail: 'Das Element hat eine ung\xfcltige Semantik f\xfcr ein Element in der Fokusreihenfolge.'
           }
         },
         'color-contrast-enhanced': {
           impact: 'serious',
           messages: {
-            pass: 'Element has sufficient color contrast of ${data.contrastRatio}',
+            pass: 'Das Element hat einen ausreichenden Kontrast von ${data.contrastRatio}.',
             fail: {
               default:
-                'Element has insufficient color contrast of ${data.contrastRatio} (foreground color: ${data.fgColor}, background color: ${data.bgColor}, font size: ${data.fontSize}, font weight: ${data.fontWeight}). Expected contrast ratio of ${data.expectedContrastRatio}',
+                'Das Element hat einen unzureichenden Kontrast von ${data.contrastRatio} (Vordergrundfarbe: ${data.fgColor}, Hintergrundfarbe: ${data.bgColor}, Schriftgr\xf6\xdfe: ${data.fontSize}, Schriftst\xe4rke: ${data.fontWeight}). Erwartetes Kontrastverh\xe4ltnis von ${data.expectedContrastRatio}',
               fgOnShadowColor:
-                'Element has insufficient color contrast of ${data.contrastRatio} between the foreground and shadow color (foreground color: ${data.fgColor}, text-shadow color: ${data.shadowColor}, font size: ${data.fontSize}, font weight: ${data.fontWeight}). Expected contrast ratio of ${data.expectedContrastRatio}',
+                'Das Element hat einen unzureichenden Kontrast von ${data.contrastRatio} zwischen der Vordergrund- und der Schattenfarbe (Vordergrundfarbe: ${data.fgColor}, Textschattenfarbe: ${data.shadowColor}, Schriftgr\xf6\xdfe: ${data.fontSize}, Schriftst\xe4rke: ${data.fontWeight}). Erwartetes Kontrastverh\xe4ltnis von ${data.expectedContrastRatio}',
               shadowOnBgColor:
-                'Element has insufficient color contrast of ${data.contrastRatio} between the shadow color and background color (text-shadow color: ${data.shadowColor}, background color: ${data.bgColor}, font size: ${data.fontSize}, font weight: ${data.fontWeight}). Expected contrast ratio of ${data.expectedContrastRatio}'
+                'Das Element hat einen unzureichenden Kontrast von ${data.contrastRatio} zwischen der Schattenfarbe und der Hintergrundfarbe (Textschattenfarbe: ${data.shadowColor}, Hintergrundfarbe: ${data.bgColor}, Schriftgr\xf6\xdfe: ${data.fontSize}, Schriftst\xe4rke: ${data.fontWeight}). Erwartetes Kontrastverh\xe4ltnis von ${data.expectedContrastRatio}'
             },
             incomplete: {
-              default: 'Unable to determine contrast ratio',
+              default:
+                'Das Kontrastverh\xe4ltnis konnte nicht ermittelt werden.',
               bgImage:
-                "Element's background color could not be determined due to a background image",
+                'Die Hintergrundfarbe des Elementes konnte aufgrund eines Hintergrundbildes nicht bestimmt werden.',
               bgGradient:
-                "Element's background color could not be determined due to a background gradient",
+                'Die Hintergrundfarbe des Elementes konnte aufgrund eines Hintergrundfarbverlaufes nicht bestimmt werden.',
               imgNode:
-                "Element's background color could not be determined because element contains an image node",
+                'Die Hintergrundfarbe des Elementes konnte nicht bestimmt werden, da das Element einen Image Node enth\xe4lt.',
               bgOverlap:
-                "Element's background color could not be determined because it is overlapped by another element",
+                'Die Hintergrundfarbe des Elementes konnte nicht bestimmt werden, da es von einem anderen Element \xfcberlagert wird.',
               fgAlpha:
-                "Element's foreground color could not be determined because of alpha transparency",
+                'Die Vordergrundfarbe des Elementes konnte aufgrund der Alpha-Transparenz nicht ermittelt werden.',
               elmPartiallyObscured:
-                "Element's background color could not be determined because it's partially obscured by another element",
+                'Die Hintergrundfarbe des Elements konnte nicht bestimmt werden, da es teilweise von anderen Elementen \xfcberdeckt wird.',
               elmPartiallyObscuring:
-                "Element's background color could not be determined because it partially overlaps other elements",
+                'Die Hintergrundfarbe des Elements konnte nicht bestimmt werden, da es teilweise andere Elemente \xfcberdeckt.',
               outsideViewport:
-                "Element's background color could not be determined because it's outside the viewport",
+                'Die Hintergrundfarbe des Elements konnte nicht bestimmt werden, da es sich au\xdferhalb des Viewports befindet.',
               equalRatio:
-                'Element has a 1:1 contrast ratio with the background',
+                'Das Element hat einen 1:1 Kontrast mit der Hintergrundfarbe.',
               shortTextContent:
-                'Element content is too short to determine if it is actual text content',
-              nonBmp: 'Element content contains only non-text characters',
+                'Der Inhalt des Elements ist zu kurz um zu bestimmen ob es sich wirklich um Textinhalt handelt.',
+              nonBmp:
+                'Das Element enth\xe4lt ausschlie\xdflich Nicht-Text Zeichen.',
               pseudoContent:
-                "Element's background color could not be determined due to a pseudo element"
+                'Die Hintergrundfarbe konnte aufgrund eines pseudo Elementes nicht bestimmt werden.'
             }
           }
         },
@@ -43991,411 +44062,419 @@
           messages: {
             pass: {
               default:
-                'Element has sufficient color contrast of ${data.contrastRatio}',
-              hidden: 'Element is hidden'
+                'Das Element hat einen ausreichenden Kontrast von ${data.contrastRatio}.',
+              hidden: 'Das Element ist versteckt.'
             },
             fail: {
               default:
-                'Element has insufficient color contrast of ${data.contrastRatio} (foreground color: ${data.fgColor}, background color: ${data.bgColor}, font size: ${data.fontSize}, font weight: ${data.fontWeight}). Expected contrast ratio of ${data.expectedContrastRatio}',
+                'Das Element hat einen unzureichenden Kontrast von ${data.contrastRatio} (Vordergrundfarbe: ${data.fgColor}, Hintergrundfarbe: ${data.bgColor}, Schriftgr\xf6\xdfe: ${data.fontSize}, Schriftst\xe4rke: ${data.fontWeight}). Erwartetes Kontrastverh\xe4ltnis von ${data.expectedContrastRatio}',
               fgOnShadowColor:
-                'Element has insufficient color contrast of ${data.contrastRatio} between the foreground and shadow color (foreground color: ${data.fgColor}, text-shadow color: ${data.shadowColor}, font size: ${data.fontSize}, font weight: ${data.fontWeight}). Expected contrast ratio of ${data.expectedContrastRatio}',
+                'Das Element hat einen unzureichenden Kontrast von ${data.contrastRatio} zwischen der Vordergrund- und der Schattenfarbe (Vordergrundfarbe: ${data.fgColor}, Textschattenfarbe: ${data.shadowColor}, Schriftgr\xf6\xdfe: ${data.fontSize}, Schriftst\xe4rke: ${data.fontWeight}). Erwartetes Kontrastverh\xe4ltnis von ${data.expectedContrastRatio}',
               shadowOnBgColor:
-                'Element has insufficient color contrast of ${data.contrastRatio} between the shadow color and background color (text-shadow color: ${data.shadowColor}, background color: ${data.bgColor}, font size: ${data.fontSize}, font weight: ${data.fontWeight}). Expected contrast ratio of ${data.expectedContrastRatio}'
+                'Das Element hat einen unzureichenden Kontrast von ${data.contrastRatio} zwischen der Schattenfarbe und der Hintergrundfarbe (Textschattenfarbe: ${data.shadowColor}, Hintergrundfarbe: ${data.bgColor}, Schriftgr\xf6\xdfe: ${data.fontSize}, Schriftst\xe4rke: ${data.fontWeight}). Erwartetes Kontrastverh\xe4ltnis von ${data.expectedContrastRatio}'
             },
             incomplete: {
-              default: 'Unable to determine contrast ratio',
+              default:
+                'Das Kontrastverh\xe4ltnis konnte nicht ermittelt werden.',
               bgImage:
-                "Element's background color could not be determined due to a background image",
+                'Die Hintergrundfarbe des Elementes konnte aufgrund eines Hintergrundbildes nicht bestimmt werden.',
               bgGradient:
-                "Element's background color could not be determined due to a background gradient",
+                'Die Hintergrundfarbe des Elementes konnte aufgrund eines Hintergrundfarbverlaufes nicht bestimmt werden.',
               imgNode:
-                "Element's background color could not be determined because element contains an image node",
+                'Die Hintergrundfarbe des Elementes konnte nicht bestimmt werden, da das Element einen Image Node enth\xe4lt.',
               bgOverlap:
-                "Element's background color could not be determined because it is overlapped by another element",
+                'Die Hintergrundfarbe des Elementes konnte nicht bestimmt werden, da es von einem anderen Element \xfcberlagert wird.',
               complexTextShadows:
-                "Element's contrast could not be determined because it uses complex text shadows",
+                'Der Kontrast des Elements konnte nicht bestimmt werden, da es komplexe Textschatten verwendet.',
               fgAlpha:
-                "Element's foreground color could not be determined because of alpha transparency",
+                'Die Vordergrundfarbe des Elementes konnte aufgrund der Alpha-Transparenz nicht ermittelt werden.',
               elmPartiallyObscured:
-                "Element's background color could not be determined because it's partially obscured by another element",
+                'Die Hintergrundfarbe des Elements konnte nicht bestimmt werden, da es teilweise von anderen Elementen \xfcberdeckt wird.',
               elmPartiallyObscuring:
-                "Element's background color could not be determined because it partially overlaps other elements",
+                'Die Hintergrundfarbe des Elements konnte nicht bestimmt werden, da es teilweise andere Elemente \xfcberdeckt.',
               outsideViewport:
-                "Element's background color could not be determined because it's outside the viewport",
+                'Die Hintergrundfarbe des Elements konnte nicht bestimmt werden, da es sich au\xdferhalb des Viewports befindet.',
               equalRatio:
-                'Element has a 1:1 contrast ratio with the background',
+                'Das Element hat einen 1:1 Kontrast mit der Hintergrundfarbe.',
               shortTextContent:
-                'Element content is too short to determine if it is actual text content',
-              nonBmp: 'Element content contains only non-text characters',
+                'Der Inhalt des Elements ist zu kurz um zu bestimmen ob es sich wirklich um Textinhalt handelt.',
+              nonBmp:
+                'Das Element enth\xe4lt ausschlie\xdflich Nicht-Text Zeichen.',
               pseudoContent:
-                "Element's background color could not be determined due to a pseudo element"
+                'Die Hintergrundfarbe konnte aufgrund eines pseudo Elementes nicht bestimmt werden.'
             }
           }
         },
         'link-in-text-block-style': {
           impact: 'serious',
           messages: {
-            pass: 'Links can be distinguished from surrounding text by visual styling',
+            pass: 'Links k\xf6nnen durch visuelle Gestaltung vom umgebenden Text unterschieden werden.',
             incomplete: {
               default:
-                'Check if the link needs styling to distinguish it from nearby text',
+                'Pr\xfcfe, ob der Link ein Styling ben\xf6tigt, um sich vom umgebenden Text zu unterscheiden.',
               pseudoContent:
-                "Check if the link's pseudo style is sufficient to distinguish it from the surrounding text"
+                'Pr\xfcfe, ob der Pseudostil des Links ausreicht, um ihn vom umgebenden Text zu unterscheiden.'
             },
-            fail: 'The link has no styling (such as underline) to distinguish it from the surrounding text'
+            fail: 'Der Link hat kein Styling (z.B. Unterstreichung), um ihn vom umgebenden Text zu unterscheiden.'
           }
         },
         'link-in-text-block': {
           impact: 'serious',
           messages: {
-            pass: 'Links can be distinguished from surrounding text in some way other than by color',
+            pass: 'Links k\xf6nnen vom umgebenenden Text auf unterschiedliche Art und Weise unterschieden werden.',
             fail: {
               fgContrast:
-                'The link has insufficient color contrast of ${data.contrastRatio}:1 with the surrounding text. (Minimum contrast is ${data.requiredContrastRatio}:1, link text: ${data.nodeColor}, surrounding text: ${data.parentColor})',
+                'Der Link hat einen unzureichenden Kontrast von ${data.contrastRatio}:1 mit dem umgebenden Text (Mindestkontrast ist ${data.requiredContrastRatio}:1, Linktext: ${data.nodeColor}, umgebender Text: ${data.parentColor}).',
               bgContrast:
-                'The link background has insufficient color contrast of ${data.contrastRatio} (Minimum contrast is ${data.requiredContrastRatio}:1, link background color: ${data.nodeBackgroundColor}, surrounding background color: ${data.parentBackgroundColor})'
+                'Der Link-Hintergrund hat einen unzureichenden Kontrast von ${data.contrastRatio} (Mindestkontrast ist ${data.requiredContrastRatio}:1, Link-Hintergrundfarbe: ${data.nodeBackgroundColor}, umgebende Hintergrundfarbe: ${data.parentBackgroundColor}).'
             },
             incomplete: {
               default:
-                "Element's foreground contrast ratio could not be determined",
+                'Das Kontrastverh\xe4ltnis konnte nicht ermittelt werden.',
               bgContrast:
-                "Element's background contrast ratio could not be determined",
+                'Das Kontrastverh\xe4ltnis des Elements konnte nicht bestimmt werden. Suchen Sie nach einem bestimmten Hover/Fokus-Stil.',
               bgImage:
-                "Element's contrast ratio could not be determined due to a background image",
+                'Das Kontrastverh\xe4ltnis des Elements konnte aufgrund eines Hintergrundbildes nicht bestimmt werden.',
               bgGradient:
-                "Element's contrast ratio could not be determined due to a background gradient",
+                'Das Kontrastverh\xe4ltnis des Elements konnte aufgrund eines Hintergrundfarbverlaufes nicht bestimmt werden.',
               imgNode:
-                "Element's contrast ratio could not be determined because element contains an image node",
+                'Das Kontrastverh\xe4ltnis des Elements konnte nicht bestimmt werden, da das Element einen Image Node enth\xe4lt.',
               bgOverlap:
-                "Element's contrast ratio could not be determined because of element overlap"
+                'Das Kontrastverh\xe4ltnis des Elements konnte aufgrund einer \xdcberlagerung nicht bestimmt werden.'
             }
           }
         },
         'autocomplete-appropriate': {
           impact: 'serious',
           messages: {
-            pass: 'The autocomplete value is on an appropriate element',
-            fail: 'The autocomplete value is inappropriate for this type of input'
+            pass: 'Der Wert des autocomplete Attributes ist f\xfcr diese Art des Eingabefeldes geeignet.',
+            fail: 'Der Wert des autocomplete Attributes ist f\xfcr diese Art des Eingabefeldes nicht geeignet.'
           }
         },
         'autocomplete-valid': {
           impact: 'serious',
           messages: {
-            pass: 'the autocomplete attribute is correctly formatted',
-            fail: 'the autocomplete attribute is incorrectly formatted',
+            pass: 'Der Wert des autocomplete Attributes ist korrekt formatiert.',
+            fail: 'Der Wert des autocomplete Attributes ist inkorrekt formatiert.',
             incomplete:
-              'the autocomplete attribute has a non-standard value. Check whether any standard value could be used instead.'
+              'Der Wert des autocomplete Attributes hat einen Nicht-Standardwert. Pr\xfcfe, ob stattdessen ein Standardwert verwendet werden kann.'
           }
         },
         accesskeys: {
           impact: 'serious',
           messages: {
-            pass: 'Accesskey attribute value is unique',
-            fail: 'Document has multiple elements with the same accesskey'
+            pass: 'Alle accesskey-Attribute sind einzigartig.',
+            fail: 'Das Dokument enth\xe4lt mehrere Elemente mit dem gleichen accesskey-Attribut.'
           }
         },
         'focusable-content': {
           impact: 'serious',
           messages: {
-            pass: 'Element contains focusable elements',
-            fail: 'Element should have focusable content'
+            pass: 'Das Element beeinhaltet fokussierbaren Inhalt.',
+            fail: 'Das Element beeinhaltet keinen fokussierbaren Inhalt.'
           }
         },
         'focusable-disabled': {
           impact: 'serious',
           messages: {
-            pass: 'No focusable elements contained within element',
+            pass: 'Das Element beeinhaltet keinen fokussierbaren Inhalt.',
             incomplete:
-              'Check if the focusable elements immediately move the focus indicator',
-            fail: 'Focusable content should be disabled or be removed from the DOM'
+              'Pr\xfcfe, ob die fokussierbaren Elemente den Fokusindikator sofort bewegen.',
+            fail: 'Fokussierbarer Inhalt sollte deaktiviert oder vom DOM entfernt werden.'
           }
         },
         'focusable-element': {
           impact: 'serious',
           messages: {
-            pass: 'Element is focusable',
-            fail: 'Element should be focusable'
+            pass: 'Element ist fokussierbar.',
+            fail: 'Element sollte fokussierbar sein.'
           }
         },
         'focusable-modal-open': {
           impact: 'serious',
           messages: {
-            pass: 'No focusable elements while a modal is open',
+            pass: 'Keine fokussierbaren Elemente w\xe4hrend ein modaler Dialog offen ist.',
             incomplete:
-              'Check that focusable elements are not tabbable in the current state'
+              '\xdcberpr\xfcfe ob Elemente w\xe4hrend des derzeitigen Status fokussierbar sind.'
           }
         },
         'focusable-no-name': {
           impact: 'serious',
           messages: {
-            pass: 'Element is not in tab order or has accessible text',
-            fail: 'Element is in tab order and does not have accessible text',
-            incomplete: 'Unable to determine if element has an accessible name'
+            pass: 'Das Element befindet sich nicht in der Tabreihenfolge und enth\xe4lt keinen zug\xe4nglichen Text.',
+            fail: 'Das Element befindet sich in der Tabreihenfolge und enth\xe4lt keinen zug\xe4nglichen Text.',
+            incomplete:
+              'Es ist nicht m\xf6glich herauszufinden ob Element einen zug\xe4nglichen Namen (accessible name) besitzt.'
           }
         },
         'focusable-not-tabbable': {
           impact: 'serious',
           messages: {
-            pass: 'No focusable elements contained within element',
+            pass: 'Keine fokussierbaren Elemente innerhalb des Elements.',
             incomplete:
-              'Check if the focusable elements immediately move the focus indicator',
-            fail: 'Focusable content should have tabindex="-1" or be removed from the DOM'
+              'Pr\xfcfe, ob die fokussierbaren Elemente den Fokusindikator sofort bewegen.',
+            fail: "Fokussierbare Elemente sollten mit tabindex='-1' versehen oder vom DOM entfernt werden."
           }
         },
         'frame-focusable-content': {
           impact: 'serious',
           messages: {
-            pass: 'Element does not have focusable descendants',
-            fail: 'Element has focusable descendants',
-            incomplete: 'Could not determine if element has descendants'
+            pass: 'Element hat keine fokussierbaren Nachkommen (descendants).',
+            fail: 'Element hat fokussierbare Nachkommen (descendants).',
+            incomplete:
+              'Es konnte nicht festgestellt werden, ob das Element Nachkommen (descendants) hat.'
           }
         },
         'landmark-is-top-level': {
           impact: 'moderate',
           messages: {
-            pass: 'The ${data.role} landmark is at the top level.',
-            fail: 'The ${data.role} landmark is contained in another landmark.'
+            pass: 'Die ${data.role} landmark befindet sich auf h\xf6chster Ebene.',
+            fail: 'Die ${data.role} landmark befindet sich innerhalb einer anderen landmark.'
           }
         },
         'no-focusable-content': {
           impact: 'serious',
           messages: {
-            pass: 'Element does not have focusable descendants',
+            pass: 'Element hat keine fokussierbaren Nachkommen (descendants).',
             fail: {
-              default: 'Element has focusable descendants',
+              default: 'Element hat fokussierbare Nachkommen (descendants).',
               notHidden:
-                'Using a negative tabindex on an element inside an interactive control does not prevent assistive technologies from focusing the element (even with aria-hidden="true")'
+                'Die Verwendung eines negativen Tabindex f\xfcr ein Element innerhalb eines interaktiven Steuerelements verhindert nicht, dass assistive Technologien das Element fokussieren (selbst bei aria-hidden="true")'
             },
-            incomplete: 'Could not determine if element has descendants'
+            incomplete:
+              'Es konnte nicht festgestellt werden, ob das Element Nachkommen (descendants) hat.'
           }
         },
         'page-has-heading-one': {
           impact: 'moderate',
           messages: {
-            pass: 'Page has at least one level-one heading',
-            fail: 'Page must have a level-one heading'
+            pass: 'Die Seite besitzt mindestens eine \xdcberschrift der ersten Ebene.',
+            fail: 'Die Seite muss eine \xdcberschrift erster Ebene besitzen.'
           }
         },
         'page-has-main': {
           impact: 'moderate',
           messages: {
-            pass: 'Document has at least one main landmark',
-            fail: 'Document does not have a main landmark'
+            pass: 'Die Seite besitzt eine main landmark.',
+            fail: 'Die Seite muss eine main landmark besitzen.'
           }
         },
         'page-no-duplicate-banner': {
           impact: 'moderate',
           messages: {
-            pass: 'Document does not have more than one banner landmark',
-            fail: 'Document has more than one banner landmark'
+            pass: 'Das Dokument besitzt nicht mehr als eine banner landmark.',
+            fail: 'Das Dokument besitzt mehr als eine banner landmark.'
           }
         },
         'page-no-duplicate-contentinfo': {
           impact: 'moderate',
           messages: {
-            pass: 'Document does not have more than one contentinfo landmark',
-            fail: 'Document has more than one contentinfo landmark'
+            pass: 'Das Dokument besitzt nicht mehr als eine contentinfo landmark.',
+            fail: 'Das Dokument besitzt mehr als eine contentinfo landmark.'
           }
         },
         'page-no-duplicate-main': {
           impact: 'moderate',
           messages: {
-            pass: 'Document does not have more than one main landmark',
-            fail: 'Document has more than one main landmark'
+            pass: 'Das Dokument besitzt nicht mehr als eine main landmark.',
+            fail: 'Das Dokument besitzt mehr als eine main landmark.'
           }
         },
         tabindex: {
           impact: 'serious',
           messages: {
-            pass: 'Element does not have a tabindex greater than 0',
-            fail: 'Element has a tabindex greater than 0'
+            pass: 'Das Element besitzt einen tabindex-Attributwert der nicht gr\xf6\xdfer als 0 ist.',
+            fail: 'Das Element besitzt einen tabindex-Attributwert gr\xf6\xdfer als 0.'
           }
         },
         'alt-space-value': {
           impact: 'critical',
           messages: {
-            pass: 'Element has a valid alt attribute value',
-            fail: 'Element has an alt attribute containing only a space character, which is not ignored by all screen readers'
+            pass: 'Element hat ein valides alt Attribut.',
+            fail: 'Element hat ein alt Attribut, welches ausschlie\xdflich Leerzeichen beeinhaltet, die jedoch nicht durch Screenreader ignoriert werden.'
           }
         },
         'duplicate-img-label': {
           impact: 'minor',
           messages: {
-            pass: 'Element does not duplicate existing text in <img> alt text',
-            fail: 'Element contains <img> element with alt text that duplicates existing text'
+            pass: 'Das Element besitzt einen Alternativtext der anderweitig vorhanden Text nicht wiederholt.',
+            fail: 'Das Element besitzt ein <img>-Element mit Alternativtext, der vorhandenen Text wiederholt.'
           }
         },
         'explicit-label': {
           impact: 'critical',
           messages: {
-            pass: 'Element has an explicit <label>',
-            fail: 'Element does not have an explicit <label>',
+            pass: 'Das <form>-Element besitzt ein explizites <label>.',
+            fail: 'Das <form>-Element besitzt kein explizites <label>.',
             incomplete:
-              'Unable to determine if form element has an explicit <label>'
+              'Es ist nicht m\xf6glich herauszufinden ob das <form> Element ein explizites <label> besitzt.'
           }
         },
         'help-same-as-label': {
           impact: 'minor',
           messages: {
-            pass: 'Help text (title or aria-describedby) does not duplicate label text',
-            fail: 'Help text (title or aria-describedby) text is the same as the label text'
+            pass: 'Der Hilfstext (title oder aria-describedby) dupliziert den label-Text nicht.',
+            fail: 'Der Hilfstext (angegeben durch ein title- oder aria-describedby-Attribut) wiederholt den label-Text.'
           }
         },
         'hidden-explicit-label': {
           impact: 'critical',
           messages: {
-            pass: 'Form element has a visible explicit <label>',
-            fail: 'Form element has explicit <label> that is hidden',
+            pass: 'Das <form> Element besitzt ein sichtbares explizites <label>.',
+            fail: 'Das <form> Element besitzt ein <label>, welches nicht sichtbar ist.',
             incomplete:
-              'Unable to determine if form element has explicit <label> that is hidden'
+              'Nicht m\xf6glich herauszufinden ob <form> Element ein sichtbares <label> besitzt.'
           }
         },
         'implicit-label': {
           impact: 'critical',
           messages: {
-            pass: 'Element has an implicit (wrapped) <label>',
-            fail: 'Element does not have an implicit (wrapped) <label>',
+            pass: 'Das <form>-Element besitzt ein implizites (umschlossenes) <label>-Element.',
+            fail: 'Das <form>-Element besitzt kein implizites <label>-Element.',
             incomplete:
-              'Unable to determine if form element has an implicit (wrapped) <label>'
+              'Nicht m\xf6glich herauszufinden ob das <form> Element ein implizites (umschlossenes) <label> besitzt.'
           }
         },
         'label-content-name-mismatch': {
           impact: 'serious',
           messages: {
-            pass: "Element contains visible text as part of it's accessible name",
-            fail: 'Text inside the element is not included in the accessible name'
+            pass: 'Element beeinhaltet sichtbaren Text als Teil des zug\xe4nglichen Namens (accessible name).',
+            fail: 'Das Element beeinhaltet Text, welcher nicht Teil des zug\xe4nglichen Namens (accessible name) ist.'
           }
         },
         'multiple-label': {
           impact: 'moderate',
           messages: {
-            pass: 'Form field does not have multiple label elements',
+            pass: 'Das <form>-Element besitzt keine multiplen <label>-Elemente.',
             incomplete:
-              'Multiple label elements is not widely supported in assistive technologies. Ensure the first label contains all necessary information.'
+              'Elemente mit mehreren Labeln werden in assistiven Technologien nicht allgemein unterst\xfctzt. Es sollte sichergestellt werden, dass alle relevanten Informationen im ersten Label enthalten sind.'
           }
         },
         'title-only': {
           impact: 'serious',
           messages: {
-            pass: 'Form element does not solely use title attribute for its label',
-            fail: 'Only title used to generate label for form element'
+            pass: 'Das <form>-Element ist nicht nur lediglich durch ein title-Attribut beschriftet.',
+            fail: 'Das <form>-Element ist lediglich durch ein title-Attribut beschriftet.'
           }
         },
         'landmark-is-unique': {
           impact: 'moderate',
           messages: {
-            pass: 'Landmarks must have a unique role or role/label/title (i.e. accessible name) combination',
-            fail: 'The landmark must have a unique aria-label, aria-labelledby, or title to make landmarks distinguishable'
+            pass: 'Landmarks besitzen eine einzigartige Rolle oder Rollen/Label/Titel (zug\xe4nglicher Name / accessible name) Kombination.',
+            fail: 'Landmark muss ein einzigartiges aria-label, aria-labelledby oder einen Titel besitzen, um es von anderen zu unterscheiden.'
           }
         },
         'has-lang': {
           impact: 'serious',
           messages: {
-            pass: 'The <html> element has a lang attribute',
+            pass: 'Das <html>-Element besitzt ein lang-Attribut.',
             fail: {
               noXHTML:
-                'The xml:lang attribute is not valid on HTML pages, use the lang attribute.',
-              noLang: 'The <html> element does not have a lang attribute'
+                'Das xml:lang-Attribut ist auf HTML Seiten nicht valide, es sollte das lang-Attribut genutzt werden.',
+              noLang: 'Das <html>-Element besitzt kein lang-Attribut.'
             }
           }
         },
         'valid-lang': {
           impact: 'serious',
           messages: {
-            pass: 'Value of lang attribute is included in the list of valid languages',
-            fail: 'Value of lang attribute not included in the list of valid languages'
+            pass: 'Der Wert des lang-Attributes ist in der Liste der g\xfcltigen Sprachen enthalten.',
+            fail: 'Der Wert des lang-Attributes ist nicht valide.'
           }
         },
         'xml-lang-mismatch': {
           impact: 'moderate',
           messages: {
-            pass: 'Lang and xml:lang attributes have the same base language',
-            fail: 'Lang and xml:lang attributes do not have the same base language'
+            pass: 'Das lang- und xml:lang-Attribut verweisen auf dieselbe Sprache.',
+            fail: 'Das lang- und xml:lang-Attribut verweisen nicht auf dieselbe Sprache.'
           }
         },
         dlitem: {
           impact: 'serious',
           messages: {
-            pass: 'Description list item has a <dl> parent element',
-            fail: 'Description list item does not have a <dl> parent element'
+            pass: 'Der Definitionslisteneintrag besitzt ein <dl>-Elternelement.',
+            fail: 'Der Definitionslisteneintrag besitzt kein <dl>-Elternelement.'
           }
         },
         listitem: {
           impact: 'serious',
           messages: {
-            pass: 'List item has a <ul>, <ol> or role="list" parent element',
+            pass: 'Das Aufz\xe4hlungselement besitzt ein g\xfcltiges Elternelement (<ul>, <ol> oder Element mit role="list").',
             fail: {
-              default: 'List item does not have a <ul>, <ol> parent element',
+              default:
+                'Aufz\xe4hlungselement besitzt kein g\xfcltiges Elternelement (<ul>, <ol>)',
               roleNotValid:
-                'List item parent element has a role that is not role="list"'
+                'Aufz\xe4hlungselement besitzt kein g\xfcltiges Elternelement ohne role-Attribut (<ul>, <ol>) oder mit role="list".'
             }
           }
         },
         'only-dlitems': {
           impact: 'serious',
           messages: {
-            pass: 'dl element only has direct children that are allowed inside; <dt>, <dd>, or <div> elements',
-            fail: 'dl element has direct children that are not allowed: ${data.values}'
+            pass: 'Das Aufz\xe4hlungselement enth\xe4lt Kindelemente, welche innerhalb der <dt> oder <dd>-Elemente erlaubt sind.',
+            fail: 'Das <dl>-Element enth\xe4lt unerlaubte Kindelemente.'
           }
         },
         'only-listitems': {
           impact: 'serious',
           messages: {
-            pass: 'List element only has direct children that are allowed inside <li> elements',
-            fail: 'List element has direct children that are not allowed: ${data.values}'
+            pass: 'Das Aufz\xe4hlungselement besitzt Kinder, welche innerhalb eines <li>-Elements erlaubt sind.',
+            fail: 'Das Aufz\xe4hlungselement besitzt Kinder, die nicht erlaubt sind: ${data.values}'
           }
         },
         'structured-dlitems': {
           impact: 'serious',
           messages: {
-            pass: 'When not empty, element has both <dt> and <dd> elements',
-            fail: 'When not empty, element does not have at least one <dt> element followed by at least one <dd> element'
+            pass: 'Das Definitionslisten-Element enth\xe4lt sowohl <dt> als auch <dd>-Elemente, falls es nicht leer sein sollte.',
+            fail: 'Das Definitionslisten-Element enth\xe4lt kein <dt>-Element, welches von keinem <dd>-Element gefolgt wird.'
           }
         },
         caption: {
           impact: 'critical',
           messages: {
-            pass: 'The multimedia element has a captions track',
-            incomplete: 'Check that captions are available for the element'
+            pass: 'Das Multimedia-Element besitzt eine Untertitelung (captions track).',
+            incomplete:
+              'F\xfcr das Element konnte keine Untertitelung (captions track) gefunden werden.'
           }
         },
         'frame-tested': {
           impact: 'critical',
           messages: {
-            pass: 'The iframe was tested with axe-core',
-            fail: 'The iframe could not be tested with axe-core',
-            incomplete: 'The iframe still has to be tested with axe-core'
+            pass: 'Das iFrame konnte mit axe-core getestet werden.',
+            fail: 'Das iFrame konnte nicht mit axe-core getestet werden.',
+            incomplete: 'Das iFrame muss noch mit axe-core getestet werden.'
           }
         },
         'no-autoplay-audio': {
           impact: 'moderate',
           messages: {
-            pass: '<video> or <audio> does not output audio for more than allowed duration or has controls mechanism',
-            fail: '<video> or <audio> outputs audio for more than allowed duration and does not have a controls mechanism',
+            pass: 'Die <video> oder <audio>-Elemente geben keinen Ton \xfcber die erlaubte Zeitspanne aus oder haben Kontrollm\xf6glichkeiten.',
+            fail: 'Die <video> oder <audio>-Elemente geben Ton \xfcber die erlaubte Zeitspanne aus oder haben keine Kontrollm\xf6glichkeiten.',
             incomplete:
-              'Check that the <video> or <audio> does not output audio for more than allowed duration or provides a controls mechanism'
+              'Es sollte \xfcberpr\xfcft werden, dass <video> oder <audio>-Elemente keinen Ton \xfcber die erlaubte Zeitspanne ausgeben oder Kontrollm\xf6glichkeiten haben.'
           }
         },
         'css-orientation-lock': {
           impact: 'serious',
           messages: {
-            pass: 'Display is operable, and orientation lock does not exist',
-            fail: 'CSS Orientation lock is applied, and makes display inoperable',
-            incomplete: 'CSS Orientation lock cannot be determined'
+            pass: 'Display ist bedienbar, und eine CSS-Ausrichtungssperre ist nicht vorhanden.',
+            fail: 'CSS-Ausrichtungssperre wird angewendet und macht die Anzeige unbrauchbar.',
+            incomplete:
+              'Der Wert der CSS-Ausrichtungssperre kann nicht ermittelt werden.'
           }
         },
         'meta-viewport-large': {
           impact: 'minor',
           messages: {
-            pass: '<meta> tag does not prevent significant zooming on mobile devices',
-            fail: '<meta> tag limits zooming on mobile devices'
+            pass: 'Der <meta>-Tag schr\xe4nkt das Zoomen nicht ein.',
+            fail: 'Die viewport-Einstellungen im <meta>-Tag schr\xe4nken das Zoomen auf mobilen Ger\xe4ten ein.'
           }
         },
         'meta-viewport': {
           impact: 'critical',
           messages: {
-            pass: '<meta> tag does not disable zooming on mobile devices',
-            fail: '${data} on <meta> tag disables zooming on mobile devices'
+            pass: 'Der <meta>-Tag blockiert das Zoomen auf mobilen Ger\xe4ten nicht.',
+            fail: 'Die viewport-Einstellungen im <meta>-Tag blockieren das Zoomen auf mobilen Ger\xe4ten.'
           }
         },
         'target-offset': {
@@ -44403,18 +44482,18 @@
           messages: {
             pass: {
               default:
-                'Target has sufficient space from its closest neighbors. Safe clickable space has a diameter of ${data.closestOffset}px which is at least ${data.minOffset}px.',
+                'Das Ziel hat gen\xfcgend Abstand zu seinen n\xe4chsten Nachbarn. Der sichere klickbare Bereich hat einen Durchmesser von ${data.closestOffset}px, der mindestens ${data.minOffset}px betr\xe4gt.',
               large:
-                'Target far exceeds the minimum size of ${data.minOffset}px.'
+                'Das Ziel \xfcberschreitet bei weitem die Mindestgr\xf6\xdfe von ${data.minOffset}px.'
             },
-            fail: 'Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of ${data.closestOffset}px instead of at least ${data.minOffset}px.',
+            fail: 'Das Ziel hat nicht gen\xfcgend Abstand zu seinen n\xe4chsten Nachbarn. Der sichere klickbare Bereich hat einen Durchmesser von ${data.closestOffset}px statt mindestens ${data.minOffset}px.',
             incomplete: {
               default:
-                'Element with negative tabindex has insufficient space to its closest neighbors. Safe clickable space has a diameter of ${data.closestOffset}px instead of at least ${data.minOffset}px. Is this a target?',
+                'Element mit negativem Tabindex hat nicht gen\xfcgend Abstand zu seinen n\xe4chsten Nachbarn. Der sichere klickbare Bereich hat einen Durchmesser von ${data.closestOffset}px statt mindestens ${data.minOffset}px. Ist dies ein Ziel?',
               nonTabbableNeighbor:
-                'Target has insufficient space to its closest neighbors. Safe clickable space has a diameter of ${data.closestOffset}px instead of at least ${data.minOffset}px. Is the neighbor a target?',
+                'Das Ziel hat nicht gen\xfcgend Abstand zu seinen n\xe4chsten Nachbarn. Der sichere klickbare Bereich hat einen Durchmesser von ${data.closestOffset}px statt mindestens ${data.minOffset}px. Ist der Nachbar ein Ziel?',
               tooManyRects:
-                'Could not get the target size because there are too many overlapping elements'
+                'Die Zielgr\xf6\xdfe konnte nicht ermittelt werden, da zu viele \xfcberlappende Elemente vorhanden sind.'
             }
           }
         },
@@ -44423,174 +44502,177 @@
           messages: {
             pass: {
               default:
-                'Control has sufficient size (${data.width}px by ${data.height}px, should be at least ${data.minSize}px by ${data.minSize}px)',
+                'Das Steuerelement hat eine ausreichende Gr\xf6\xdfe (${data.width}px x ${data.height}px, sollte mindestens ${data.minSize}px x ${data.minSize}px sein).',
               obscured:
-                'Control is ignored because it is fully obscured and thus not clickable',
-              large: 'Target far exceeds the minimum size of ${data.minSize}px.'
+                'Das Steuerelement wird ignoriert, da es vollst\xe4ndig verdeckt ist und daher nicht angeklickt werden kann.',
+              large:
+                'Das Ziel \xfcberschreitet bei weitem die Mindestgr\xf6\xdfe von ${data.minSize}px.'
             },
             fail: {
               default:
-                'Target has insufficient size (${data.width}px by ${data.height}px, should be at least ${data.minSize}px by ${data.minSize}px)',
+                'Das Ziel hat eine unzureichende Gr\xf6\xdfe (${data.width}px x ${data.height}px, sollte mindestens ${data.minSize}px x ${data.minSize}px sein).',
               partiallyObscured:
-                'Target has insufficient size because it is partially obscured (smallest space is ${data.width}px by ${data.height}px, should be at least ${data.minSize}px by ${data.minSize}px)'
+                'Das Ziel hat eine unzureichende Gr\xf6\xdfe, weil es teilweise verdeckt ist (der kleinste Platz ist ${data.width}px mal ${data.height}px, sollte mindestens ${data.minSize}px mal ${data.minSize}px sein).'
             },
             incomplete: {
               default:
-                'Element with negative tabindex has insufficient size (${data.width}px by ${data.height}px, should be at least ${data.minSize}px by ${data.minSize}px). Is this a target?',
+                'Element mit negativem Tabindex hat unzureichende Gr\xf6\xdfe (${data.width}px mal ${data.height}px, sollte mindestens ${data.minSize}px mal ${data.minSize}px sein). Ist dies ein Ziel?',
               contentOverflow:
-                'Element size could not be accurately determined due to overflow content',
+                'Elementgr\xf6\xdfe konnte aufgrund von \xdcberlaufinhalten nicht genau bestimmt werden',
               partiallyObscured:
-                'Element with negative tabindex has insufficient size because it is partially obscured (smallest space is ${data.width}px by ${data.height}px, should be at least ${data.minSize}px by ${data.minSize}px). Is this a target?',
+                'Element mit negativem Tabindex hat unzureichende Gr\xf6\xdfe, weil es teilweise verdeckt ist (kleinster Platz ist ${data.width}px mal ${data.height}px, sollte mindestens ${data.minSize}px mal ${data.minSize}px sein). Ist dies ein Ziel?',
               partiallyObscuredNonTabbable:
-                'Target has insufficient size because it is partially obscured by a neighbor with negative tabindex (smallest space is ${data.width}px by ${data.height}px, should be at least ${data.minSize}px by ${data.minSize}px). Is the neighbor a target?',
+                'Das Ziel hat eine unzureichende Gr\xf6\xdfe, weil es teilweise von einem Nachbarn mit negativem Tabindex verdeckt wird (der kleinste Platz ist ${data.width}px mal ${data.height}px, sollte mindestens ${data.minSize}px mal ${data.minSize}px sein). Ist der Nachbar ein Ziel?',
               tooManyRects:
-                'Could not get the target size because there are too many overlapping elements'
+                'Die Zielgr\xf6\xdfe konnte nicht ermittelt werden, da zu viele \xfcberlappende Elemente vorhanden sind.'
             }
           }
         },
         'header-present': {
           impact: 'serious',
           messages: {
-            pass: 'Page has a heading',
-            fail: 'Page does not have a heading'
+            pass: 'Die Seite besitzt eine Seiten\xfcberschrift.',
+            fail: 'Die Seite besitzt keine Seiten\xfcberschrift.'
           }
         },
         'heading-order': {
           impact: 'moderate',
           messages: {
-            pass: 'Heading order valid',
-            fail: 'Heading order invalid',
-            incomplete: 'Unable to determine previous heading'
+            pass: 'Die \xdcberschriftenstruktur ist g\xfcltig.',
+            fail: 'Die \xdcberschriftenstruktur ist nicht valide.',
+            incomplete: 'Vorherige \xdcberschrift kann nicht ermittelt werden.'
           }
         },
         'identical-links-same-purpose': {
           impact: 'minor',
           messages: {
-            pass: 'There are no other links with the same name, that go to a different URL',
+            pass: 'Es befinden sich keine Links auf der Seite, welche mit demselben Namen auf dasselbe Ziel verweisen.',
             incomplete:
-              'Check that links have the same purpose, or are intentionally ambiguous.'
+              'Pr\xfcfen Sie, ob die Links den gleichen Zweck haben oder absichtlich mehrdeutig sind.'
           }
         },
         'internal-link-present': {
           impact: 'serious',
           messages: {
-            pass: 'Valid skip link found',
-            fail: 'No valid skip link found'
+            pass: 'Es wurde ein g\xfcltiger Skip-Link gefunden.',
+            fail: 'Kein g\xfcltiger Skip-Link gefunden.'
           }
         },
         landmark: {
           impact: 'serious',
           messages: {
-            pass: 'Page has a landmark region',
-            fail: 'Page does not have a landmark region'
+            pass: 'Die Seite besitzt eine landmark region.',
+            fail: 'Die Seite besitzt keine landmark region.'
           }
         },
         'meta-refresh-no-exceptions': {
           impact: 'minor',
           messages: {
-            pass: '<meta> tag does not immediately refresh the page',
-            fail: '<meta> tag forces timed refresh of page'
+            pass: '<meta> Tag aktualisiert die Seite nicht sofort.',
+            fail: '<meta> Tag erzwingt eine zeitgesteuerte Aktualisierung der Seite.'
           }
         },
         'meta-refresh': {
           impact: 'critical',
           messages: {
-            pass: '<meta> tag does not immediately refresh the page',
-            fail: '<meta> tag forces timed refresh of page (less than 20 hours)'
+            pass: 'Der <meta>-Tag erzwingt keine sofortige Aktualisierung der Seite.',
+            fail: 'Der <meta>-Tag erzwingt eine zeitgesteuerte Aktualisierung der Seite.'
           }
         },
         'p-as-heading': {
           impact: 'serious',
           messages: {
-            pass: '<p> elements are not styled as headings',
-            fail: 'Heading elements should be used instead of styled <p> elements',
+            pass: '<p>-Elemente werden nicht als \xdcberschriftenelement zweckentfremdet.',
+            fail: 'Anstelle eines \xdcberschriftenelementes wird lediglich ein durch Formatierungen hervorgehobenes <p>-Element verwendet.',
             incomplete:
-              'Unable to determine if <p> elements are styled as headings'
+              'Es kann nicht festgestellt werden, ob <p>-Elemente als \xdcberschriften gestylt sind.'
           }
         },
         region: {
           impact: 'moderate',
           messages: {
-            pass: 'All page content is contained by landmarks',
-            fail: 'Some page content is not contained by landmarks'
+            pass: 'Jeglicher Inhalt der Seite befindet sich in einer landmark.',
+            fail: 'Der Inhalt befindet sich nicht in einer ARIA landmark.'
           }
         },
         'skip-link': {
           impact: 'moderate',
           messages: {
-            pass: 'Skip link target exists',
-            incomplete: 'Skip link target should become visible on activation',
-            fail: 'No skip link target'
+            pass: 'Das Ziel des Skip-Links existiert.',
+            incomplete: 'Der Skip-Link sollte bei Aktivierung sichtbar werden.',
+            fail: 'Es existiert kein Ziel f\xfcr den Skip-Link.'
           }
         },
         'unique-frame-title': {
           impact: 'serious',
           messages: {
-            pass: "Element's title attribute is unique",
-            fail: "Element's title attribute is not unique"
+            pass: 'Das title-Attribut des Elements ist einzigartig.',
+            fail: 'Das title-Attribut des Elementes ist nicht einmalig.'
           }
         },
         'duplicate-id-active': {
           impact: 'serious',
           messages: {
-            pass: 'Document has no active elements that share the same id attribute',
-            fail: 'Document has active elements with the same id attribute: ${data}'
+            pass: 'Dokument hat keine aktiven Elemente mit denselben ID-Attributen.',
+            fail: 'Dokument hat aktiven Elemente mit denselben ID-Attributen: ${data}.'
           }
         },
         'duplicate-id-aria': {
           impact: 'critical',
           messages: {
-            pass: 'Document has no elements referenced with ARIA or labels that share the same id attribute',
-            fail: 'Document has multiple elements referenced with ARIA with the same id attribute: ${data}'
+            pass: 'Dokument besitzt keine Elemente, welche mit ARIA oder Labels referenziert werden, welche die gleiche ID besitzen.',
+            fail: 'Dokument besitzt Elemente, welche mit ARIA oder Labels referenziert werden, welche folgende gleiche ID besitzen: ${data}'
           }
         },
         'duplicate-id': {
           impact: 'minor',
           messages: {
-            pass: 'Document has no static elements that share the same id attribute',
-            fail: 'Document has multiple static elements with the same id attribute: ${data}'
+            pass: 'Das Dokument besitzt eine einzigartige ID.',
+            fail: 'Das Dokument besitzt mehrere Elemente mit demselben id-Attributwert: ${data}.'
           }
         },
         'aria-label': {
           impact: 'serious',
           messages: {
-            pass: 'aria-label attribute exists and is not empty',
-            fail: 'aria-label attribute does not exist or is empty'
+            pass: 'Das aria-label-Attribut existiert und ist nicht leer.',
+            fail: 'Es existiert kein aria-label-Attribut oder das Attribut ist leer.'
           }
         },
         'aria-labelledby': {
           impact: 'serious',
           messages: {
-            pass: 'aria-labelledby attribute exists and references elements that are visible to screen readers',
-            fail: 'aria-labelledby attribute does not exist, references elements that do not exist or references elements that are empty',
-            incomplete: 'Ensure aria-labelledby references an existing element'
+            pass: 'Das aria-labelledby-Attribut existiert und referenziert ein Element, welches f\xfcr Screen Reader sichtbar ist.',
+            fail: 'Das aria-labelledby-Attribut existiert nicht oder referenziert ein Element, das nicht existiert, nicht sichtbar oder leer ist.',
+            incomplete:
+              'Es sollte sichergestellt werden, dass aria-labelledby auf ein existierendes Element verweist.'
           }
         },
         'avoid-inline-spacing': {
           impact: 'serious',
           messages: {
-            pass: "No inline styles with '!important' that affect text spacing has been specified",
+            pass: "Es werden keine inline-Stilangaben mit '!important' spezifiziert, welche den Textabstand beeinflussen.",
             fail: {
               singular:
-                "Remove '!important' from inline style ${data.values}, as overriding this is not supported by most browsers",
+                "Es sollte '!important' vom inline-Stil ${data.values} entfernt werden, da das \xdcberschreiben in den meisten Browsern nicht erlaubt ist.",
               plural:
-                "Remove '!important' from inline styles ${data.values}, as overriding this is not supported by most browsers"
+                "Es sollte '!important' von den inline-Stilen ${data.values} entfernt werden, da das \xdcberschreiben in den meisten Browsern nicht erlaubt ist."
             }
           }
         },
         'button-has-visible-text': {
           impact: 'critical',
           messages: {
-            pass: 'Element has inner text that is visible to screen readers',
-            fail: 'Element does not have inner text that is visible to screen readers',
-            incomplete: 'Unable to determine if element has children'
+            pass: 'Das Element besitzt Text, der f\xfcr Screenreader sichtbar ist.',
+            fail: 'Das Element besitzt keinen Text, der f\xfcr Screenreader sichtbar ist.',
+            incomplete:
+              'Ob das Element \xfcber Kindelemente bzw. textuelle Inhalte verf\xfcgt, kann nicht ermittelt werden.'
           }
         },
         'doc-has-title': {
           impact: 'serious',
           messages: {
-            pass: 'Document has a non-empty <title> element',
-            fail: 'Document does not have a non-empty <title> element'
+            pass: 'Das Dokument besitzt ein nichtleeres <title>-Element.',
+            fail: 'Das Dokument besitzt kein <title>-Element oder das <title>-Element ist leer.'
           }
         },
         'error-occurred': {
@@ -44603,60 +44685,61 @@
         exists: {
           impact: 'minor',
           messages: {
-            pass: 'Element does not exist',
-            incomplete: 'Element exists'
+            pass: 'Das Element existiert nicht.',
+            incomplete: 'Das Element existiert.'
           }
         },
         'has-alt': {
           impact: 'critical',
           messages: {
-            pass: 'Element has an alt attribute',
-            fail: 'Element does not have an alt attribute'
+            pass: 'Das Element besitzt ein alt-Attribut.',
+            fail: 'Das Element besitzt kein alt-Attribut.'
           }
         },
         'has-visible-text': {
           impact: 'minor',
           messages: {
-            pass: 'Element has text that is visible to screen readers',
-            fail: 'Element does not have text that is visible to screen readers',
-            incomplete: 'Unable to determine if element has children'
+            pass: 'Das Element besitzt Text, der f\xfcr Screenreader sichtbar ist.',
+            fail: 'Das Element besitzt keinen Text, der f\xfcr Screenreader sichtbar ist.',
+            incomplete:
+              'Es ist nicht m\xf6glich zu ermitteln, ob das Element Kinder besitzt.'
           }
         },
         'important-letter-spacing': {
           impact: 'serious',
           messages: {
-            pass: 'Letter-spacing in the style attribute is not set to !important, or meets the minimum',
-            fail: 'letter-spacing in the style attribute must not use !important, or be at ${data.minValue}em (current ${data.value}em)'
+            pass: 'letter-spacing im style-Attribut ist nicht auf !important gesetzt oder entspricht dem Minimum.',
+            fail: 'letter-spacing im style-Attribut darf nicht !important sein oder muss ${data.minValue}em (aktuell ${data.value}em) entsprechen.'
           }
         },
         'important-line-height': {
           impact: 'serious',
           messages: {
-            pass: 'line-height in the style attribute is not set to !important, or meets the minimum',
-            fail: 'line-height in the style attribute must not use !important, or be at ${data.minValue}em (current ${data.value}em)'
+            pass: 'line-height im style-Attribut ist nicht auf !important gesetzt oder entspricht dem Minimum.',
+            fail: 'line-height im style-Attribut darf nicht !important sein oder muss ${data.minValue}em (aktuell ${data.value}em) entsprechen.'
           }
         },
         'important-word-spacing': {
           impact: 'serious',
           messages: {
-            pass: 'word-spacing in the style attribute is not set to !important, or meets the minimum',
-            fail: 'word-spacing in the style attribute must not use !important, or be at ${data.minValue}em (current ${data.value}em)'
+            pass: 'word-spacing im style-Attribut ist nicht auf !important gesetzt oder entspricht dem Minimum.',
+            fail: 'word-spacing im style-Attribut darf nicht !important sein oder muss ${data.minValue}em (aktuell ${data.value}em) entsprechen.'
           }
         },
         'is-on-screen': {
           impact: 'serious',
           messages: {
-            pass: 'Element is not visible',
-            fail: 'Element is visible'
+            pass: 'Das Element ist nicht sichtbar.',
+            fail: 'Das Element ist sichtbar.'
           }
         },
         'non-empty-alt': {
           impact: 'critical',
           messages: {
-            pass: 'Element has a non-empty alt attribute',
+            pass: 'Das Element hat ein nichtleeres alt-Attribut.',
             fail: {
-              noAttr: 'Element has no alt attribute',
-              emptyAttr: 'Element has an empty alt attribute'
+              noAttr: 'Das Element hat kein alt-Attribut.',
+              emptyAttr: 'Das Element hat ein leeres alt-Attribut.'
             }
           }
         },
@@ -44664,158 +44747,160 @@
           impact: 'critical',
           messages: {
             pass: {
-              default: 'Element does not have a value attribute',
-              'has-label': 'Element has a non-empty value attribute'
+              default: 'Das Element hat kein value-Attribut.',
+              'has-label': 'Das Element hat ein nichtleeres value-Attribut.'
             },
-            fail: 'Element has a value attribute and the value attribute is empty'
+            fail: 'Das Element besitzt ein value-Attribut und das value-Attribut ist leer.'
           }
         },
         'non-empty-placeholder': {
           impact: 'serious',
           messages: {
-            pass: 'Element has a placeholder attribute',
+            pass: 'Element hat ein nichtleeres Platzhalterattribut.',
             fail: {
-              noAttr: 'Element has no placeholder attribute',
-              emptyAttr: 'Element has an empty placeholder attribute'
+              noAttr: 'Element hat kein Platzhalterattribut.',
+              emptyAttr: 'Element hat ein leeres Platzhalterattribut.'
             }
           }
         },
         'non-empty-title': {
           impact: 'serious',
           messages: {
-            pass: 'Element has a title attribute',
+            pass: 'Das Element hat ein nichtleeres title-Attribut.',
             fail: {
-              noAttr: 'Element has no title attribute',
-              emptyAttr: 'Element has an empty title attribute'
+              noAttr: 'Element hat kein title-Attribut.',
+              emptyAttr: 'Element hat ein leeres title-Attribut.'
             }
           }
         },
         'non-empty-value': {
           impact: 'critical',
           messages: {
-            pass: 'Element has a non-empty value attribute',
+            pass: 'Das Element hat ein nichtleeres value-Attribut',
             fail: {
-              noAttr: 'Element has no value attribute',
-              emptyAttr: 'Element has an empty value attribute'
+              noAttr: 'Element hat kein value-Attribut.',
+              emptyAttr: 'Element hat ein leeres value-Attribut.'
             }
           }
         },
         'presentational-role': {
           impact: 'minor',
           messages: {
-            pass: 'Element\'s default semantics were overridden with role="${data.role}"',
+            pass: 'Die Standardsemantik des Elements wurden mit der Rolle "${data.role}" \xfcberschrieben.',
             fail: {
               default:
-                'Element\'s default semantics were not overridden with role="none" or role="presentation"',
+                'Die Standardsemantik des Elements wurden nicht mit der Rolle role="none" oder role="presentation" \xfcberschrieben.',
               globalAria:
-                "Element's role is not presentational because it has a global ARIA attribute",
+                'Die Rolle des Elements ist nicht pr\xe4sentativ aufgrund des globalen ARIA Attributs.',
               focusable:
-                "Element's role is not presentational because it is focusable",
-              both: "Element's role is not presentational because it has a global ARIA attribute and is focusable",
+                'Die Rolle des Elements ist nicht pr\xe4sentativ aufgrund der M\xf6glichkeit es zu fokussieren.',
+              both: 'Die Rolle des Elements ist nicht pr\xe4sentativ aufgrund des zugewiesenen globalen ARIA Attributs und der M\xf6glichkeit es zu fokussieren.',
               iframe:
-                'Using the "title" attribute on an ${data.nodeName} element with a presentational role behaves inconsistently between screen readers'
+                'Die Verwendung des "title"-Attributs auf einem ${data.nodeName}-Element mit einer Pr\xe4sentationsrolle verh\xe4lt sich inkonsistent zwischen Screenreadern.'
             }
           }
         },
         'role-none': {
           impact: 'minor',
           messages: {
-            pass: 'Element\'s default semantics were overridden with role="none"',
-            fail: 'Element\'s default semantics were not overridden with role="none"'
+            pass: 'Die Standard-Semantik des Elementes ist mit role="none" \xfcberschrieben.',
+            fail: 'Die Standard-Semantik des Elementes ist nicht mit role="none" \xfcberschrieben.'
           }
         },
         'role-presentation': {
           impact: 'minor',
           messages: {
-            pass: 'Element\'s default semantics were overridden with role="presentation"',
-            fail: 'Element\'s default semantics were not overridden with role="presentation"'
+            pass: 'Die Standard-Semantik des Elementes ist mit role="presentation" \xfcberschrieben.',
+            fail: 'Die Standard-Semantik des Elementes ist nicht mit role="presentation" \xfcberschrieben.'
           }
         },
         'svg-non-empty-title': {
           impact: 'serious',
           messages: {
-            pass: 'Element has a child that is a title',
+            pass: 'Element hat ein Kind, welches ein Titel ist.',
             fail: {
-              noTitle: 'Element has no child that is a title',
-              emptyTitle: 'Element child title is empty'
+              noTitle: 'Element hat ein Kind, welches kein Titel ist.',
+              emptyTitle:
+                'Das Kind des Elements, welches ein Titel ist, ist leer.'
             },
             incomplete:
-              'Unable to determine element has a child that is a title'
+              'Es ist nicht m\xf6glich zu ermitteln ob das Element ein Kind hat, welches ein Titel ist.'
           }
         },
         'caption-faked': {
           impact: 'serious',
           messages: {
-            pass: 'The first row of a table is not used as a caption',
-            fail: 'The first child of the table should be a caption instead of a table cell'
+            pass: 'Die erste Zeile der Tabelle wird nicht als Tabellen\xfcberschrift verwendet.',
+            fail: 'Die erste Zeile der Tabelle sollte nicht als Tabellen\xfcberschrift verwendet werden.'
           }
         },
         'html5-scope': {
           impact: 'moderate',
           messages: {
-            pass: 'Scope attribute is only used on table header elements (<th>)',
-            fail: 'In HTML 5, scope attributes may only be used on table header elements (<th>)'
+            pass: 'Das scope-Attribut wird nur f\xfcr Tabellenkopfzellen (<th>) verwendet.',
+            fail: 'In HTML5 d\xfcrfen scope-Attribute lediglich f\xfcr Tabellenkopfzellen (<th>) verwendet werden.'
           }
         },
         'same-caption-summary': {
           impact: 'minor',
           messages: {
-            pass: 'Content of summary attribute and <caption> are not duplicated',
-            fail: 'Content of summary attribute and <caption> element are identical',
-            incomplete: 'Unable to determine if <table> element has a caption'
+            pass: 'Die Inhalte des summary-Attributes und des <caption>-Elementes sind nicht identisch.',
+            fail: 'Die Inhalte des summary-Attributes und des <caption>-Elementes sind identisch.',
+            incomplete:
+              'Es kann nicht festgestellt werden, ob das <table>-Element eine \xdcberschrift hat.'
           }
         },
         'scope-value': {
           impact: 'critical',
           messages: {
-            pass: 'Scope attribute is used correctly',
-            fail: "The value of the scope attribute may only be 'row' or 'col'"
+            pass: 'Das scope-Attribut wird korrekt verwendet.',
+            fail: 'Das <td>-Element besitzt ein scope-Attribut. In HTML5 d\xfcrfen scope-Attribute jedoch lediglich f\xfcr Tabellenkopfzellen <th> verwendet werden.'
           }
         },
         'td-has-header': {
           impact: 'critical',
           messages: {
-            pass: 'All non-empty data cells have table headers',
-            fail: 'Some non-empty data cells do not have table headers'
+            pass: 'Alle nichtleeren Datenzellen haben eine Tabellenkopfzelle.',
+            fail: 'Nicht alle (nichtleeren) Datenzellen haben eine Tabellenkopfzelle.'
           }
         },
         'td-headers-attr': {
           impact: 'serious',
           messages: {
-            pass: 'The headers attribute is exclusively used to refer to other header cells in the table',
-            incomplete: 'The headers attribute is empty',
+            pass: 'Das headers-Attribut wird ausschlie\xdflich daf\xfcr verwendet, um auf andere Kopfzellen in der Tabelle zu verweisen.',
+            incomplete: 'Das headers-Attribut ist leer.',
             fail: {
               'cell-header-not-in-table':
-                'The headers attribute is not exclusively used to refer to other header cells in the table',
+                'Das headers-Attribut wird nicht ausschlie\xdflich daf\xfcr verwendet, um auf andere Kopfzellen in der Tabelle zu verweisen.',
               'cell-header-not-th':
-                'The headers attribute must refer to header cells, not data cells',
+                'Das headers-Attribut muss auf Kopfzellen verweisen, nicht auf Datenzellen.',
               'header-refs-self':
-                'The element with headers attribute refers to itself'
+                'Das Element mit dem headers-Attribut verweist auf sich selbst.'
             }
           }
         },
         'th-has-data-cells': {
           impact: 'serious',
           messages: {
-            pass: 'All table header cells refer to data cells',
-            fail: 'Not all table header cells refer to data cells',
-            incomplete: 'Table data cells are missing or empty'
+            pass: 'Alle Tabellenkopfzellen beziehen sich auf Datenzellen.',
+            fail: 'Nicht alle Tabellenkopfzellen beziehen sich auf Datenzellen.',
+            incomplete: 'Datenzellen der Tabelle fehlen oder sind leer.'
           }
         },
         'hidden-content': {
           impact: 'minor',
           messages: {
-            pass: 'All content on the page has been analyzed.',
-            fail: 'There were problems analyzing the content on this page.',
+            pass: 'Jeglicher Inhalt der Seite wurde analysiert.',
+            fail: 'Beim Analysieren der Inhalte auf dieser Seite sind Probleme aufgetreten.',
             incomplete:
-              'There is hidden content on the page that was not analyzed. You will need to trigger the display of this content in order to analyze it.'
+              'Auf der Seite befinden sich versteckte Inhalte, die nicht analysiert werden konnten. Um den Inhalt analysieren zu k\xf6nnen, m\xfcssen Sie die Anzeige dieser Inhalte ausl\xf6sen.'
           }
         }
       },
       failureSummaries: {
         any: {
           failureMessage: function anonymous(it) {
-            var out = 'Fix any of the following:';
+            var out = 'Korrigiere mindestens einen der folgenden Punkte:';
             var arr1 = it;
             if (arr1) {
               var value,
@@ -44831,7 +44916,7 @@
         },
         none: {
           failureMessage: function anonymous(it) {
-            var out = 'Fix all of the following:';
+            var out = 'Korrigiere alle der folgenden Punkte:';
             var arr1 = it;
             if (arr1) {
               var value,
