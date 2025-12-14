@@ -1935,10 +1935,10 @@
       var SHARED = '__core-js_shared__';
       var store = module.exports = globalThis2[SHARED] || defineGlobalProperty(SHARED, {});
       (store.versions || (store.versions = [])).push({
-        version: '3.44.0',
+        version: '3.47.0',
         mode: IS_PURE ? 'pure' : 'global',
-        copyright: '\xa9 2014-2025 Denis Pushkarev (zloirock.ru)',
-        license: 'https://github.com/zloirock/core-js/blob/v3.44.0/LICENSE',
+        copyright: '\xa9 2014-2025 Denis Pushkarev (zloirock.ru), 2025 CoreJS Company (core-js.io)',
+        license: 'https://github.com/zloirock/core-js/blob/v3.47.0/LICENSE',
         source: 'https://github.com/zloirock/core-js'
       });
     });
@@ -8110,8 +8110,8 @@
         format.type || (format.type = 'function');
         format.name || (format.name = 'color');
         format.coordGrammar = parseCoordGrammar(format.coords);
-        var coordFormats = Object.entries(this.coords).map(function(_ref149, i) {
-          var _ref150 = _slicedToArray(_ref149, 2), id = _ref150[0], coordMeta = _ref150[1];
+        var coordFormats = Object.entries(this.coords).map(function(_ref151, i) {
+          var _ref152 = _slicedToArray(_ref151, 2), id = _ref152[0], coordMeta = _ref152[1];
           var outputType = format.coordGrammar[i][0];
           var fromRange = coordMeta.range || coordMeta.refRange;
           var toRange = outputType.range, suffix = '';
@@ -29413,6 +29413,18 @@
       out.incomplete.forEach(addFailureSummaries);
       out.violations.forEach(addFailureSummaries);
       var mergedIssues = [].concat(_toConsumableArray(out.violations), _toConsumableArray(out.incomplete));
+      var groupedIssuesMap = {};
+      mergedIssues.forEach(function(issue) {
+        if (groupedIssuesMap[issue.id]) {
+          var _groupedIssuesMap$iss;
+          (_groupedIssuesMap$iss = groupedIssuesMap[issue.id].nodes).push.apply(_groupedIssuesMap$iss, _toConsumableArray(issue.nodes));
+        } else {
+          groupedIssuesMap[issue.id] = _extends({}, issue, {
+            nodes: _toConsumableArray(issue.nodes)
+          });
+        }
+      });
+      mergedIssues = Object.values(groupedIssuesMap);
       var impactOrder = [ 'critical', 'serious', 'moderate', 'minor' ];
       var byImpact = impactOrder.map(function(key) {
         return {
@@ -29422,19 +29434,24 @@
           })
         };
       });
-      var conformanceLevels = [ 'wcag2a', 'wcag2aa', 'wcag2aaa' ];
-      var byConformanceLevel = conformanceLevels.map(function(level) {
+      var conformanceMap = {
+        A: [ 'wcag2a', 'wcag21a', 'wcag22a' ],
+        AA: [ 'wcag2aa', 'wcag21aa', 'wcag22aa' ],
+        AAA: [ 'wcag2aaa', 'wcag21aaa', 'wcag22aaa' ]
+      };
+      var byConformanceLevel = Object.entries(conformanceMap).map(function(_ref149) {
+        var _ref150 = _slicedToArray(_ref149, 2), level = _ref150[0], tags = _ref150[1];
         return {
           level: level,
           errors: mergedIssues.filter(function(issue) {
             return issue.tags && issue.tags.some(function(tag) {
-              return tag.toLowerCase() === level;
+              return tags.includes(tag.toLowerCase());
             });
           })
         };
       });
-      var totalChecks = mergedIssues.length + (out.passes ? out.passes.length : 0);
       var passedChecks = out.passes ? out.passes.length : 0;
+      var totalChecks = mergedIssues.length + passedChecks;
       var successPercent = totalChecks > 0 ? Math.round(passedChecks / totalChecks * 100) : null;
       callback(_extends({}, _getEnvironmentData(environmentData), {
         toolOptions: toolOptions,
