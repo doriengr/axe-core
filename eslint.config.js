@@ -374,7 +374,9 @@ module.exports = [
       'lib/core/imports/polyfills.js',
       'lib/core/utils/uuid.js',
       'axe.js',
-      'axe.min.js'
+      'axe.min.js',
+      'axe.de.js',
+      'axe.de.min.js'
     ]
   }
 ];
