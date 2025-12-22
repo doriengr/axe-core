@@ -1,4 +1,4 @@
-/*! axe v1.0.5
+/*! axe v1.0.8
  * Copyright (c) 2015 - 2025 Deque Systems, Inc.
  *
  * Your use of this Source Code Form is subject to the terms of the Mozilla Public
@@ -22,7 +22,7 @@
     }, _typeof(o);
   }
   var axe = axe || {};
-  axe.version = '1.0.5';
+  axe.version = '1.0.8';
   if (typeof define === 'function' && define.amd) {
     define('axe-core', [], function() {
       return axe;
@@ -29435,9 +29435,9 @@
         };
       });
       var conformanceMap = {
-        A: [ 'wcag2a', 'wcag21a', 'wcag22a' ],
+        A: [ 'wcag2a', 'wcag21a' ],
         AA: [ 'wcag2aa', 'wcag21aa', 'wcag22aa' ],
-        AAA: [ 'wcag2aaa', 'wcag21aaa', 'wcag22aaa' ]
+        AAA: [ 'wcag2aaa' ]
       };
       var byConformanceLevel = Object.entries(conformanceMap).map(function(_ref149) {
         var _ref150 = _slicedToArray(_ref149, 2), level = _ref150[0], tags = _ref150[1];
@@ -29450,6 +29450,11 @@
           })
         };
       });
+      var byBestPractice = {
+        errors: mergedIssues.filter(function(issue) {
+          return issue.tags && issue.tags.includes('best-practice');
+        })
+      };
       var passedChecks = out.passes ? out.passes.length : 0;
       var totalChecks = mergedIssues.length + passedChecks;
       var successPercent = totalChecks > 0 ? Math.round(passedChecks / totalChecks * 100) : null;
@@ -29457,6 +29462,7 @@
         toolOptions: toolOptions,
         byImpact: byImpact,
         byConformanceLevel: byConformanceLevel,
+        byBestPractice: byBestPractice,
         passes: out.passes,
         summary: {
           totalChecks: totalChecks,
