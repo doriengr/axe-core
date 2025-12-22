@@ -1,4 +1,4 @@
-/*! axe v1.0.5
+/*! axe v1.0.9
  * Copyright (c) 2015 - 2025 Deque Systems, Inc.
  *
  * Your use of this Source Code Form is subject to the terms of the Mozilla Public
@@ -22,7 +22,7 @@
     }, _typeof(o);
   }
   var axe = axe || {};
-  axe.version = '1.0.5';
+  axe.version = '1.0.9';
   if (typeof define === 'function' && define.amd) {
     define('axe-core', [], function() {
       return axe;
@@ -1935,10 +1935,10 @@
       var SHARED = '__core-js_shared__';
       var store = module.exports = globalThis2[SHARED] || defineGlobalProperty(SHARED, {});
       (store.versions || (store.versions = [])).push({
-        version: '3.47.0',
+        version: '3.44.0',
         mode: IS_PURE ? 'pure' : 'global',
-        copyright: '\xa9 2014-2025 Denis Pushkarev (zloirock.ru), 2025 CoreJS Company (core-js.io)',
-        license: 'https://github.com/zloirock/core-js/blob/v3.47.0/LICENSE',
+        copyright: '\xa9 2014-2025 Denis Pushkarev (zloirock.ru)',
+        license: 'https://github.com/zloirock/core-js/blob/v3.44.0/LICENSE',
         source: 'https://github.com/zloirock/core-js'
       });
     });
@@ -29435,9 +29435,10 @@
         };
       });
       var conformanceMap = {
-        A: [ 'wcag2a', 'wcag21a', 'wcag22a' ],
+        A: [ 'wcag2a', 'wcag21a' ],
         AA: [ 'wcag2aa', 'wcag21aa', 'wcag22aa' ],
-        AAA: [ 'wcag2aaa', 'wcag21aaa', 'wcag22aaa' ]
+        AAA: [ 'wcag2aaa' ],
+        none: [ 'best-practice' ]
       };
       var byConformanceLevel = Object.entries(conformanceMap).map(function(_ref149) {
         var _ref150 = _slicedToArray(_ref149, 2), level = _ref150[0], tags = _ref150[1];
